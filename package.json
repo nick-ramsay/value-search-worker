@@ -1,0 +1,30 @@
+{
+  "name": "searching-morningstar",
+  "version": "1.0.0",
+  "description": "Tool used to search and access data from Morningstar for investments",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
+    "start:prod": "node server.js",
+    "start:dev": "concurrently \"nodemon --ignore 'client/*'\" \"npm run client\"",
+    "client": "cd client && npm run start",
+    "install": "cd client && npm install",
+    "build": "cd client && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nick-ramsay/searching-morningstar.git"
+  },
+  "author": "Nick Ramsay",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nick-ramsay/searching-morningstar/issues"
+  },
+  "homepage": "https://github.com/nick-ramsay/searching-morningstar#readme",
+  "dependencies": {
+    "core-js": "^3.9.1",
+    "express": "^4.17.1",
+    "if-env": "^1.0.4"
+  }
+}
