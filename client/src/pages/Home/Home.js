@@ -1,16 +1,32 @@
-import React, { /*useState, useEffect*/ } from 'react';
-import logo from '../../../src/logo.svg';
+import React, { useState/*, useEffect*/ } from 'react';
+import SharedFunctions, { useInput } from "../../sharedFunctions/sharedFunctions";
 import "./style.css";
 
 const Home = () => {
+    let [stockSymbol, setStockSymbol] = useInput("");
+    let [stockData, setStockData] = useState({});
+
     return (
         <div>
             <div className="App">
-                <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo" />
-                    <p>Edit <code>src/pages/Home/Home.js</code> and save to reload.</p>
-                    <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">Learn React</a>
-                </header>
+                <div className="container">
+                    <div className="col-md-12 text-center">
+                        <div className="row mb-2">
+                            <input type="text" placeholder="Enter stock symbol here (example: AAPL)..." className="form-control" id="stockSymbolInput" name="stockSymbolInput" onChange={setStockSymbol} aria-describedby="stockSymbolHelp" />
+                        </div>
+                        <div className="row mb-2">
+                            <button className="btn btn-sm btn-custom">Fetch Stock Data</button>
+                        </div>
+
+                        <div className="row">
+                            {stockData !== {} && stockData !== undefined ?
+                                ""
+                                :
+                                <p>No Stock Data</p>
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )
