@@ -1,5 +1,5 @@
 {
-  "name": "searching-morningstar",
+  "name": "searching-finviz",
   "version": "1.0.0",
   "description": "Tool used to search and access data from Morningstar for investments",
   "main": "server.js",
@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nick-ramsay/searching-morningstar.git"
+    "url": "git+https://github.com/nick-ramsay/searching-finviz.git"
   },
   "author": "Nick Ramsay",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/nick-ramsay/searching-morningstar/issues"
+    "url": "https://github.com/nick-ramsay/searching-finviz/issues"
   },
-  "homepage": "https://github.com/nick-ramsay/searching-morningstar#readme",
+  "homepage": "https://github.com/nick-ramsay/searching-finviz#readme",
   "dependencies": {
     "core-js": "^3.9.1",
     "express": "^4.17.1",
