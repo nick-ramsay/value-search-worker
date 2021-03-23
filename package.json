@@ -1,7 +1,7 @@
 {
   "name": "searching-finviz",
   "version": "1.0.0",
-  "description": "Tool used to search and access data from Morningstar for investments",
+  "description": "Tool used to search and access data from Finviz for investments",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
