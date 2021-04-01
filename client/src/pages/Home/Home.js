@@ -1,10 +1,15 @@
 import React, { useState/*, useEffect*/ } from 'react';
 import SharedFunctions, { useInput } from "../../sharedFunctions/sharedFunctions";
+import API from "../../utils/API";
 import "./style.css";
 
 const Home = () => {
     let [stockSymbol, setStockSymbol] = useInput("");
     let [stockData, setStockData] = useState({});
+
+    const scrapeQuoteData = (symbol) => {
+        API.scrapeQuoteData(symbol).then(res => {console.log(res)});
+    };
 
     return (
         <div>
@@ -16,7 +21,7 @@ const Home = () => {
                 </div>
                 <div className="row mb-4">
                     <div className="col-md-12 text-center">
-                        <button className="btn btn-sm btn-custom">Fetch Stock Data</button>
+                        <button className="btn btn-sm btn-custom" onClick={() => scrapeQuoteData(stockSymbol)}>Fetch Stock Data</button>
                     </div>
                 </div>
 
