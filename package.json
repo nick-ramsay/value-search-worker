@@ -23,8 +23,12 @@
   },
   "homepage": "https://github.com/nick-ramsay/searching-finviz#readme",
   "dependencies": {
+    "axios": "^0.21.1",
+    "cheerio": "^1.0.0-rc.5",
     "core-js": "^3.9.1",
     "express": "^4.17.1",
-    "if-env": "^1.0.4"
+    "if-env": "^1.0.4",
+    "nodemon": "^2.0.7",
+    "path": "^0.12.7"
   }
 }

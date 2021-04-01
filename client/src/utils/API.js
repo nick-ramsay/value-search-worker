@@ -7,4 +7,4 @@ export default {
         console.log(symbol);
         return axios({ method: "post", url: apiURL + "/api/searching-finviz/scrape-quote-data", data: { symbol: symbol } });
     }
-}
+};

@@ -1,4 +1,5 @@
 const express = require("express");
+const routes = require("./routes");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -20,6 +21,10 @@ app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Credentials", "true");
   next();
 });
+
+
+// Add routes, both API and view
+app.use(routes);
 
 // Start the API server
 app.listen(PORT, function () {
