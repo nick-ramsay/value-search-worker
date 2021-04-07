@@ -11,9 +11,16 @@ module.exports = {
         let apiURL = "https://finviz.com/quote.ashx?t=" + selectedSymbol;
         request.get(apiURL).then(result => {
             var $ = cheerio.load(result);
-            
-            let stockData = $("table").text()
-            console.log(stockData);
+
+            let stockDataArray = [];
+
+            $("table.snapshot-table2 > tbody > tr > td").each((index, element) => {
+                //console.log($(element).text());
+                stockDataArray[index] = $(element).text();
+            });
+
+            console.log(stockDataArray);
+
         });
     }
 }
