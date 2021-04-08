@@ -15,12 +15,22 @@ module.exports = {
             let stockDataArray = [];
 
             $("table.snapshot-table2 > tbody > tr > td").each((index, element) => {
-                //console.log($(element).text());
                 stockDataArray[index] = $(element).text();
             });
 
-            console.log(stockDataArray);
+            let stockDataObject = {};
+            let currentKey = "";
+            let currentValue = "";
 
+            for (let i = 0; i < stockDataArray.length;i++) {
+                if (i === 0 || i % 2 === 0) {
+                    currentKey = stockDataArray[i].replace(/ /g,"_");
+                } else {
+                    currentValue = stockDataArray[i];
+                    stockDataObject[currentKey] = currentValue;
+                }
+            }
+            console.log(stockDataObject);
         });
     }
 }
