@@ -1,6 +1,8 @@
 const cheerio = require("cheerio");
 const request = require("request-promise");
 const axios = require("axios");
+const integerArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+const alphabetArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
 module.exports = {
     scrapeQuoteData: function (req, res) {
@@ -19,20 +21,32 @@ module.exports = {
             });
 
             let stockDataObject = {};
-            let integerArray = [0,1,2,3,4,5,6,7,8,9];
             let currentKey = "";
             let currentValue = "";
 
-            for (let i = 0; i < stockDataArray.length;i++) {
+            for (let i = 0; i < stockDataArray.length; i++) {
                 if (i === 0 || i % 2 === 0) {
-                    currentKey = stockDataArray[i].replace(/ /g,"_");
+                    currentKey = stockDataArray[i].replace(/ /g, "_");
                 } else {
                     currentValue = stockDataArray[i];
                     let lastCharacter = currentValue.slice(-1);
-                    let secondLastCharacter = currentValue.charAt(currentValue.length-2);
-                    //console.log(secondLastCharacter+lastCharacter);
-                    //console.log(integerArray.indexOf(Number(secondLastCharacter)));
-                    stockDataObject[currentKey] = currentValue;
+                    let secondLastCharacter = currentValue.charAt(currentValue.length - 2);
+
+                    if (lastCharacter === '%' && integerArray.indexOf(Number(secondLastCharacter) !== -1)) {
+                        currentValue = currentValue.replace(/%/, '');
+                        currentValue = Number(currentValue) / 100;
+                        stockDataObject[currentKey] = currentValue;
+                    } else if (lastCharacter === "M" && integerArray.indexOf(Number(secondLastCharacter) !== -1)) {
+                        currentValue = currentValue.replace(/M/, '');
+                        currentValue = Number(currentValue) * 1000000;
+                        stockDataObject[currentKey] = currentValue;
+                    } else if (lastCharacter === "B" && integerArray.indexOf(Number(secondLastCharacter) !== -1)) {
+                        currentValue = currentValue.replace(/B/, '');
+                        currentValue = Number(currentValue) * 1000000000;
+                        stockDataObject[currentKey] = currentValue;
+                    } else {
+                        stockDataObject[currentKey] = currentValue;
+                    }
                 }
             }
             console.log(stockDataObject);
