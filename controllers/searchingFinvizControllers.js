@@ -19,6 +19,7 @@ module.exports = {
             });
 
             let stockDataObject = {};
+            let integerArray = [0,1,2,3,4,5,6,7,8,9];
             let currentKey = "";
             let currentValue = "";
 
@@ -27,6 +28,10 @@ module.exports = {
                     currentKey = stockDataArray[i].replace(/ /g,"_");
                 } else {
                     currentValue = stockDataArray[i];
+                    let lastCharacter = currentValue.slice(-1);
+                    let secondLastCharacter = currentValue.charAt(currentValue.length-2);
+                    //console.log(secondLastCharacter+lastCharacter);
+                    //console.log(integerArray.indexOf(Number(secondLastCharacter)));
                     stockDataObject[currentKey] = currentValue;
                 }
             }
