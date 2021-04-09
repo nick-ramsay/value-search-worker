@@ -27,7 +27,9 @@ module.exports = {
             for (let i = 0; i < stockDataArray.length; i++) {
                 if (i === 0 || i % 2 === 0) {
                     currentKey = stockDataArray[i].replace(/ /g, "_");
+                    // ^^^ handles the object keys
                 } else {
+                    // vvv Handles the Object values
                     currentValue = stockDataArray[i];
                     let lastCharacter = currentValue.slice(-1);
                     let secondLastCharacter = currentValue.charAt(currentValue.length - 2);
@@ -45,7 +47,18 @@ module.exports = {
                         currentValue = Number(currentValue) * 1000000000;
                         stockDataObject[currentKey] = currentValue;
                     } else {
-                        stockDataObject[currentKey] = currentValue;
+                        let alhpabeticalCharExists = false;
+                        for (let j = 0; j < currentValue.length; j++) {
+                            if (alphabetArray.indexOf(currentValue.charAt(j)) !== -1) {
+                                alhpabeticalCharExists = true;
+                            }
+                          }
+                        if (alhpabeticalCharExists === true) {
+                            stockDataObject[currentKey] = currentValue;
+                        } else {
+                            currentValue = currentValue.replace(/,/g,"");
+                            stockDataObject[currentKey] = Number(currentValue);
+                        }
                     }
                 }
             }
