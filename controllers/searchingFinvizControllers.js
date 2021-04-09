@@ -63,6 +63,7 @@ module.exports = {
                 }
             }
             console.log(stockDataObject);
+            res.json(stockDataObject);
         });
     }
 }

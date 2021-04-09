@@ -8,7 +8,8 @@ const Home = () => {
     let [stockData, setStockData] = useState({});
 
     const scrapeQuoteData = (symbol) => {
-        API.scrapeQuoteData(symbol).then(res => {console.log(res)});
+        setStockData(stockData => Object({}));
+        API.scrapeQuoteData(symbol).then(res => {console.log(res); setStockData(stockData => res.data)});
     };
 
     return (
@@ -28,7 +29,9 @@ const Home = () => {
                 <div className="row mt-4">
                     <div className="col-md-12 text-center">
                         {Object.keys(stockData).length !== 0 && stockData !== undefined ?
-                            ""
+                            <code>
+                                {JSON.stringify(stockData)}
+                            </code>
                             :
                             <p>No Stock Data</p>
 
