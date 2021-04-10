@@ -6,11 +6,25 @@ import "./style.css";
 const Home = () => {
     let [stockSymbol, setStockSymbol] = useInput("");
     let [stockData, setStockData] = useState({});
+    let [stockDataArray, setStockDataArray] = useState([]);
 
     const scrapeQuoteData = (symbol) => {
         setStockData(stockData => Object({}));
-        API.scrapeQuoteData(symbol).then(res => {console.log(res); setStockData(stockData => res.data)});
-    };
+        API.scrapeQuoteData(symbol).then(res => {
+            console.log(res);
+            setStockData(stockData => res.data);
+
+            let tempStockDataArray = [];
+            for (let key in res.data) {
+                if (res.data.hasOwnProperty(key)) {
+                    let value = res.data[key];
+                    tempStockDataArray.push([key, value]);
+                }
+            };
+            console.log(tempStockDataArray);
+            setStockDataArray(stockDataArray => tempStockDataArray);
+        });
+    }
 
     return (
         <div>
@@ -29,12 +43,27 @@ const Home = () => {
                 <div className="row mt-4">
                     <div className="col-md-12 text-center">
                         {Object.keys(stockData).length !== 0 && stockData !== undefined ?
-                            <code>
-                                {JSON.stringify(stockData)}
-                            </code>
+                            <div>
+                                <code>
+                                    {JSON.stringify(stockData)}
+                                </code>
+                                <table>
+                                    <tbody>
+                                        {stockDataArray.map((item, itemIndex) => {
+                                            return(
+                                            <tr>
+                                                <td>{item[0]}</td>
+                                                <td>{item[1]}</td>
+                                            </tr>
+                                            )
+                                        })
+                                        }
+
+                                </tbody>
+                                </table>
+                            </div>
                             :
                             <p>No Stock Data</p>
-
                         }
                     </div>
                 </div>

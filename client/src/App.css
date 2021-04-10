@@ -8,6 +8,11 @@ body {
   justify-content: center;
 }
 
+code {
+  background-color: black;
+  color: lime;
+}
+
 .form-control {
   border-color: transparent;
   border-radius: 0;
