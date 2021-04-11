@@ -15,4 +15,7 @@ export const goBack = () => {
     window.history.back();
 };
 
+export const commaFormat = (num) => {
+    return num.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+};
 

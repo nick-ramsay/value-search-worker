@@ -7,6 +7,7 @@ const Home = () => {
     let [stockSymbol, setStockSymbol] = useInput("");
     let [stockData, setStockData] = useState({});
     let [stockDataArray, setStockDataArray] = useState([]);
+    let currentAppendedRow = 0;
 
     const scrapeQuoteData = (symbol) => {
         setStockData(stockData => Object({}));
@@ -26,6 +27,8 @@ const Home = () => {
         });
     }
 
+    let currentStockDataRow;
+
     return (
         <div>
             <div className="container">
@@ -39,7 +42,6 @@ const Home = () => {
                         <button className="btn btn-sm btn-custom" onClick={() => scrapeQuoteData(stockSymbol)}>Fetch Stock Data</button>
                     </div>
                 </div>
-
                 <div className="row mt-4">
                     <div className="col-md-12 text-center">
                         {Object.keys(stockData).length !== 0 && stockData !== undefined ?
@@ -47,19 +49,32 @@ const Home = () => {
                                 <code>
                                     {JSON.stringify(stockData)}
                                 </code>
-                                <table>
-                                    <tbody>
+                                <table className="stock-data-table">
+                                    <tbody id="stock-data-table-body">
                                         {stockDataArray.map((item, itemIndex) => {
-                                            return(
-                                            <tr>
-                                                <td>{item[0]}</td>
-                                                <td>{item[1]}</td>
-                                            </tr>
-                                            )
+                                            let tableBodyDiv = document.getElementById("stock-data-table-body");
+                                            if (itemIndex % 3 === 0) {
+                                                currentAppendedRow +=1;
+                                                let newRow = document.createElement("tr");
+                                                newRow.setAttribute("id","stock-data-row" + currentAppendedRow);
+                                                tableBodyDiv.appendChild(newRow);
+                                            }
+                                            
+                                            let newCell1 = document.createElement("td");
+                                            newCell1.setAttribute("id","stock-title-cell" + itemIndex);
+                                            newCell1.setAttribute("class","stock-data-title-column");
+                                            newCell1.innerText = item[0];
+                                            document.getElementById("stock-data-row" + currentAppendedRow).appendChild(newCell1);
+
+                                            let newCell2 = document.createElement("td");
+                                            newCell2.setAttribute("id","stock-data-cell" + itemIndex);
+                                            newCell2.setAttribute("class","stock-data-column");
+                                            newCell2.innerText = item[1];
+                                            document.getElementById("stock-data-row" + currentAppendedRow).appendChild(newCell2)
+
                                         })
                                         }
-
-                                </tbody>
+                                    </tbody>
                                 </table>
                             </div>
                             :
