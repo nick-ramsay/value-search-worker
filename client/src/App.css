@@ -64,13 +64,13 @@ code, .code {
   height: 23px;
 }
 
-table {
-  background-color: white;
-}
-
 .stock-data-title-column {
   background-color:  #008000;
   color: white;
+}
+
+.stock-data-cell {
+  background-color: white;
 }
 
 .btn {

@@ -51,60 +51,35 @@ const Home = () => {
                     <div className="col-md-12 text-center">
                         {Object.keys(stockData).length !== 0 && stockData !== undefined ?
                             <div>
-                                <table className="table table-sm table-borderless table-responsive stock-data-table">
-                                    <tbody id="stock-data-table-body">
+                                <table className="table table-sm table-borderless table-responsive stock-data-table" style={{margin:"0 auto"}}>
+                                    <tbody>
                                         {Object.keys(stockData).map((keyName, i) => {
                                             currentStockDataRowArray.push(keyName);
                                             currentStockDataRowArray.push(stockData[keyName]);
                                             console.log(currentStockDataRowArray);
                                             if (i % 3 === 0 && i !== 0) {
-                                                return(
-                                                <tr>
-                                                    <td>{currentStockDataRowArray[0]}</td>
-                                                    <td>{currentStockDataRowArray[1]}</td>
-                                                    <td>{currentStockDataRowArray[2]}</td>
-                                                    <td>{currentStockDataRowArray[3]}</td>
-                                                    <td>{currentStockDataRowArray[4]}</td>
-                                                    <td>{currentStockDataRowArray[5]}</td>
-                                                </tr>)
+                                                let tempStockDataRowArray = [];
+                                                tempStockDataRowArray = currentStockDataRowArray;
+                                                currentStockDataRowArray = [];
+                                                return (
+                                                    <tr>
+                                                        <td className="stock-data-title-column">{tempStockDataRowArray[0]}</td>
+                                                        <td className="stock-data-cell">{tempStockDataRowArray[1]}</td>
+                                                        <td className="stock-data-title-column">{tempStockDataRowArray[2]}</td>
+                                                        <td className="stock-data-cell">{tempStockDataRowArray[3]}</td>
+                                                        <td className="stock-data-title-column">{tempStockDataRowArray[4]}</td>
+                                                        <td className="stock-data-cell">{tempStockDataRowArray[5]}</td>
+                                                    </tr>
+                                                )
                                             };
-                                            if (i % 3 === 0 && i !== 0) {
-                                                currentStockDataRowArray = []
-                                            }
+                                            console.log("Iterator # " + i);
                                         })
-
-                                            /*stockDataArray.map((item, itemIndex) => {
-                                                let tableBodyDiv = document.getElementById("stock-data-table-body");
-                                                if (itemIndex % 2 === 0) {
-                                                    currentAppendedRow += 1;
-                                                    const newRow = document.createElement("tr");
-                                                    newRow.setAttribute("id", "stock-data-row" + currentAppendedRow);
-                                                    newRow.setAttribute("key", "stock-data-row" + currentAppendedRow);
-                                                    tableBodyDiv.appendChild(newRow);
-                                                }
-    
-                                                let newCell1 = document.createElement("td");
-                                                newCell1.setAttribute("id", "stock-title-cell" + itemIndex);
-                                                newCell1.setAttribute("key", "stock-title-cell" + itemIndex);
-                                                newCell1.setAttribute("class", "stock-data-title-column");
-                                                newCell1.innerText = item[0];
-                                                document.getElementById("stock-data-row" + currentAppendedRow).appendChild(newCell1);
-    
-                                                let newCell2 = document.createElement("td");
-                                                newCell2.setAttribute("id", "stock-data-cell" + itemIndex);
-                                                newCell2.setAttribute("key", "stock-data-cell" + itemIndex);
-                                                newCell2.setAttribute("class", "stock-data-column");
-                                                newCell2.innerText = item[1];
-                                                document.getElementById("stock-data-row" + currentAppendedRow).appendChild(newCell2)
-                                            
-                                            })
-                                            */
                                         }
                                     </tbody>
                                 </table>
                             </div>
                             :
-                            <p><strong>No Stock Data</strong></p>
+                            <p className="text-center"><strong>No Stock Data</strong></p>
                         }
                     </div>
                 </div>
