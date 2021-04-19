@@ -48,11 +48,11 @@ const Home = () => {
                     </div>
                 </div>
                 <div className="row mt-4">
-                    <div className="col-md-12 text-center">
+                    <div className="col-md-12">
                         {Object.keys(stockData).length !== 0 && stockData !== undefined ?
-                            <div>
-                                <table className="table table-sm table-borderless table-responsive stock-data-table" style={{margin:"0 auto"}}>
-                                    <tbody>
+                            <div className="row table-responsive">
+                                <table className="table table-sm table-borderless stock-data-table center">
+                                    
                                         {Object.keys(stockData).map((keyName, i) => {
                                             currentStockDataRowArray.push(keyName);
                                             currentStockDataRowArray.push(stockData[keyName]);
@@ -75,7 +75,7 @@ const Home = () => {
                                             console.log("Iterator # " + i);
                                         })
                                         }
-                                    </tbody>
+                                    
                                 </table>
                             </div>
                             :

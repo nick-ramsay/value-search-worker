@@ -1,11 +1,15 @@
 body {
   font-family: 'Lato', serif;
-  background-color:antiquewhite;
+  background-color:whitesmoke;
   color: black;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.container {
+  margin-bottom: 20px;
 }
 
 a {
@@ -22,6 +26,14 @@ a:hover {
 code, .code {
   background-color: black;
   color: lime;
+}
+
+table {
+  margin: 0 0 15px 0;
+}
+
+.table-responsive {
+  box-shadow: 10px 10px 5px grey;
 }
 
 .form-control {
