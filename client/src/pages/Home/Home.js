@@ -52,30 +52,41 @@ const Home = () => {
                         {Object.keys(stockData).length !== 0 && stockData !== undefined ?
                             <div className="row table-responsive">
                                 <table className="table table-sm table-borderless stock-data-table center">
-                                    
-                                        {Object.keys(stockData).map((keyName, i) => {
-                                            currentStockDataRowArray.push(keyName);
-                                            currentStockDataRowArray.push(stockData[keyName]);
-                                            console.log(currentStockDataRowArray);
-                                            if (i % 3 === 0 && i !== 0) {
-                                                let tempStockDataRowArray = [];
-                                                tempStockDataRowArray = currentStockDataRowArray;
-                                                currentStockDataRowArray = [];
-                                                return (
-                                                    <tr>
-                                                        <td className="stock-data-title-column">{tempStockDataRowArray[0]}</td>
-                                                        <td className="stock-data-cell">{tempStockDataRowArray[1]}</td>
-                                                        <td className="stock-data-title-column">{tempStockDataRowArray[2]}</td>
-                                                        <td className="stock-data-cell">{tempStockDataRowArray[3]}</td>
-                                                        <td className="stock-data-title-column">{tempStockDataRowArray[4]}</td>
-                                                        <td className="stock-data-cell">{tempStockDataRowArray[5]}</td>
-                                                    </tr>
-                                                )
+                                    {Object.keys(stockData).map((keyName, i) => {
+                                        currentStockDataRowArray.push(keyName);
+                                        currentStockDataRowArray.push(stockData[keyName]);
+                                        
+                                        if (i % 3 === 0 && i !== 0) {
+                                            let tempStockDataRowArray = [];
+                                            tempStockDataRowArray = currentStockDataRowArray;
+                                            currentStockDataRowArray = [];
+
+                                            const renderCells = (item,index) => {
+                                                    return(<td className="stock-data-title-column">{index}</td>);
                                             };
-                                            console.log("Iterator # " + i);
-                                        })
-                                        }
-                                    
+
+                                            return (
+                                                <tr>
+                                                    {
+                                                        tempStockDataRowArray.forEach(renderCells)
+                                                    }
+
+                                                </tr>
+                                            )
+
+                                            /*
+                                            <td className="stock-data-title-column">{tempStockDataRowArray[0]}</td>
+                                                    <td className="stock-data-cell">{tempStockDataRowArray[1]}</td>
+                                                    <td className="stock-data-title-column">{tempStockDataRowArray[2]}</td>
+                                                    <td className="stock-data-cell">{tempStockDataRowArray[3]}</td>
+                                                    <td className="stock-data-title-column">{tempStockDataRowArray[4]}</td>
+                                                    <td className="stock-data-cell">{tempStockDataRowArray[5]}</td>
+                                                    */
+                                        };
+                                        console.log("Iterator # " + i);
+                                    })
+                                    }
+
                                 </table>
                             </div>
                             :
