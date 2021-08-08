@@ -6,12 +6,16 @@ import "./style.css";
 const Home = () => {
     let [stockSymbol, setStockSymbol] = useInput("");
     let [stockData, setStockData] = useState({});
+    let [searching, setSearching] = useState(false);
 
     const scrapeQuoteData = (symbol) => {
+        console.log(stockData);
+        setSearching(searching => true);
         setStockData(stockData => Object({}));
         API.scrapeQuoteData(symbol).then(res => {
             console.log(res);
             setStockData(stockData => res.data);
+            setSearching(searching => false);
         });
     }
 
@@ -47,41 +51,35 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
+                <div className="row">
+                    <div className="col-md-12 text-center">
+                        {stockData !== undefined && Object.keys(stockData).length !== 0 ? <h4>Showing Data for {stockSymbol}</h4>:""}
+                    </div>
+                </div>
                 <div className="row mt-4">
                     <div className="col-md-12">
                         {Object.keys(stockData).length !== 0 && stockData !== undefined ?
                             <div className="row table-responsive">
-                                <table className="table table-sm table-borderless stock-data-table center">
+                                <table className="table table-sm table-borderless  stock-data-table center">
                                     {Object.keys(stockData).map((keyName, i) => {
                                         currentStockDataRowArray.push(keyName);
                                         currentStockDataRowArray.push(stockData[keyName]);
-                                        
+
                                         if (i % 3 === 0 && i !== 0) {
                                             let tempStockDataRowArray = [];
                                             tempStockDataRowArray = currentStockDataRowArray;
                                             currentStockDataRowArray = [];
 
-                                            const renderCells = (item,index) => {
-                                                    return(<td className="stock-data-title-column">{index}</td>);
-                                            };
-
                                             return (
                                                 <tr>
-                                                    {
-                                                        tempStockDataRowArray.forEach(renderCells)
-                                                    }
-
-                                                </tr>
-                                            )
-
-                                            /*
-                                            <td className="stock-data-title-column">{tempStockDataRowArray[0]}</td>
+                                                    <td className="stock-data-title-column">{tempStockDataRowArray[0]}</td>
                                                     <td className="stock-data-cell">{tempStockDataRowArray[1]}</td>
                                                     <td className="stock-data-title-column">{tempStockDataRowArray[2]}</td>
                                                     <td className="stock-data-cell">{tempStockDataRowArray[3]}</td>
                                                     <td className="stock-data-title-column">{tempStockDataRowArray[4]}</td>
                                                     <td className="stock-data-cell">{tempStockDataRowArray[5]}</td>
-                                                    */
+                                                </tr>
+                                            )
                                         };
                                         console.log("Iterator # " + i);
                                     })
@@ -90,7 +88,7 @@ const Home = () => {
                                 </table>
                             </div>
                             :
-                            <p className="text-center"><strong>No Stock Data</strong></p>
+                            <p className="text-center"><strong>{searching === true ? "Searching ...":"No Stock Data"}</strong></p>
                         }
                     </div>
                 </div>

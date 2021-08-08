@@ -1,6 +1,6 @@
 body {
   font-family: 'Lato', serif;
-  background-color:whitesmoke;
+  background-color:antiquewhite;
   color: black;
   min-height: 100vh;
   display: flex;
@@ -29,11 +29,11 @@ code, .code {
 }
 
 table {
-  margin: 0 0 15px 0;
 }
 
 .table-responsive {
   box-shadow: 10px 10px 5px grey;
+  background-color: white;
 }
 
 .form-control {
