@@ -24,7 +24,8 @@
   "homepage": "https://github.com/nick-ramsay/searching-finviz#readme",
   "dependencies": {
     "axios": "^0.21.1",
-    "cheerio": "^1.0.0-rc.5",
+    "cheerio": "^1.0.0-rc.10",
+    "concurrently": "^6.2.1",
     "core-js": "^3.9.1",
     "express": "^4.17.1",
     "if-env": "^1.0.4",

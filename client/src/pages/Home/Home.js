@@ -26,6 +26,12 @@ const Home = () => {
 
     return (
         <div>
+            <div className="jumbotron jumbotron-fluid">
+                <div className="container">
+                    <h1>Searching Finviz</h1>
+                    <p>Quickly search Finviz for stock data</p>
+                </div>
+            </div>
             <div className="container">
                 <div className="row mb-4">
                     <div className="col-md-12">
@@ -53,7 +59,7 @@ const Home = () => {
                 </div>
                 <div className="row">
                     <div className="col-md-12 text-center">
-                        {stockData !== undefined && Object.keys(stockData).length !== 0 ? <h4>Showing Data for {stockSymbol}</h4>:""}
+                        {stockData !== undefined && Object.keys(stockData).length !== 0 ? <h4>Showing Data for {stockSymbol}</h4> : ""}
                     </div>
                 </div>
                 <div className="row mt-4">
@@ -72,11 +78,11 @@ const Home = () => {
 
                                             return (
                                                 <tr>
-                                                    <td className="stock-data-title-column">{tempStockDataRowArray[0]}</td>
+                                                    <td className="stock-data-title-column">{tempStockDataRowArray[0].replaceAll("_", " ")}</td>
                                                     <td className="stock-data-cell">{tempStockDataRowArray[1]}</td>
-                                                    <td className="stock-data-title-column">{tempStockDataRowArray[2]}</td>
+                                                    <td className="stock-data-title-column">{tempStockDataRowArray[2].replaceAll("_", " ")}</td>
                                                     <td className="stock-data-cell">{tempStockDataRowArray[3]}</td>
-                                                    <td className="stock-data-title-column">{tempStockDataRowArray[4]}</td>
+                                                    <td className="stock-data-title-column">{tempStockDataRowArray[4].replaceAll("_", " ")}</td>
                                                     <td className="stock-data-cell">{tempStockDataRowArray[5]}</td>
                                                 </tr>
                                             )
@@ -88,7 +94,7 @@ const Home = () => {
                                 </table>
                             </div>
                             :
-                            <p className="text-center"><strong>{searching === true ? "Searching ...":"No Stock Data"}</strong></p>
+                            <p className="text-center"><strong>{searching === true ? "Searching ..." : "No Stock Data"}</strong></p>
                         }
                     </div>
                 </div>
