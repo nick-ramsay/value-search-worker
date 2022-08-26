@@ -1,37 +1,5 @@
 {
-  "name": "searching-finviz",
-  "version": "1.0.0",
-  "description": "Tool used to search and access data from Finviz for investments",
-  "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
-    "start:prod": "node server.js",
-    "start:dev": "concurrently \"nodemon --ignore 'client/*'\" \"npm run client\"",
-    "client": "cd client && npm run start",
-    "install": "cd client && npm install",
-    "build": "cd client && npm run build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nick-ramsay/searching-finviz.git"
-  },
-  "author": "Nick Ramsay",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/nick-ramsay/searching-finviz/issues"
-  },
-  "homepage": "https://github.com/nick-ramsay/searching-finviz#readme",
   "dependencies": {
-    "axios": "^0.21.1",
-    "cheerio": "^1.0.0-rc.10",
-    "concurrently": "^6.2.1",
-    "core-js": "^3.9.1",
-    "express": "^4.17.1",
-    "if-env": "^1.0.4",
-    "nodemon": "^2.0.7",
-    "path": "^0.12.7",
-    "request": "^2.88.2",
-    "request-promise": "^4.2.6"
+    "puppeteer": "^16.2.0"
   }
 }
