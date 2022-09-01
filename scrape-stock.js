@@ -1,14 +1,27 @@
-const puppeteer = require('puppeteer')
+const axios = require("axios");
+const cheerio = require('cheerio');
 
-async function scrape() {
-   const browser = await puppeteer.launch({})
-   const page = await browser.newPage()
+let tickerSymbol = process.argv[2];
 
-   await page.goto('https://finviz.com/quote.ashx?t=AAPL', {waitUntil: 'load', timeout: 120000})
-   await page.waitForTimeout(60000)
-   var element = await page.waitForSelector("body > div:nth-child(8) > div > table.snapshot-table2 > tbody > tr:nth-child(1)")
-   var text = await page.evaluate(element => element.textContent, element)
-   console.log(text)
-   browser.close()
-}
-scrape()
+return axios.get("https://finviz.com/quote.ashx?t=" + tickerSymbol).then((res) => {
+    let $ = cheerio.load(res.data)
+
+    let result = {
+        tickerSymbol: tickerSymbol
+    };
+
+    let currentDataName = "";
+    let currentDataValue = "";
+
+    $("table.snapshot-table2 > tbody > tr > td").each((i, elem) => {
+        if (i === 0 || i % 2 === 0) {
+            currentDataName = $(elem).text();
+        } else {
+            //console.log($(elem).text().charAt($(elem).text().length - 1))
+            currentDataValue = $(elem).text().charAt(0) === "-" || ["0","1","2","3","4","5","6","7","8","9"].indexOf($(elem).text().charAt(0)) !== -1 ? parseFloat($(elem).text()):$(elem).text();
+            result[$(elem).text().charAt($(elem).text().length - 1) === "%" ? currentDataName + " (%)":currentDataName] = currentDataValue;
+        }
+    });
+
+    console.log(result);
+}).catch((err) => {console.log("ERROR: " + err.response.status + " - " + err.response.statusText)})
