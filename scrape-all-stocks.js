@@ -6,24 +6,29 @@ const mongoose = require('mongoose');
 const db = require("./models");
 
 //Tokens & Keys
-const IEX_TOKEN = process.env.IEX_API_KEY;
 const uri = process.env.MONGO_URI;
 
-const scrapeFinviz = (currentSymbol) => {console.log(currentSymbol)};
+const scrapeFinviz = (currentSymbol) => {return scrapeStock(currentSymbol)};
 
-mongoose.connect(uri)
-    .then(() => {
-        console.log("Database Connected Successfully 👍");
-        db.StockSymbols.find(
-            {}
-        )
-            .then(res => {
-                for (let i = 0; i < res[i].length; i++) {
+const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
 
-                //setTimeout(scrapeFinviz(res[i].symbol), 3000);
-                        
-                };
-            })
-            .catch(err => console.log(err));
-    })
-    .catch(err => console.log(err));
+const beginScraping = () => {
+    mongoose.connect(uri)
+        .then(() => {
+            db.StockSymbols.find(
+                {}
+            )
+                .then(async (res) => {
+                    for (let i = 0; i < res.length; i++) {
+                        await sleep(3000);
+                        scrapeFinviz(res[i].symbol);
+                    };
+                })
+                .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
+};
+
+beginScraping();
