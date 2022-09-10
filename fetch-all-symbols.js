@@ -24,7 +24,7 @@ axios.get("https://cloud.iexapis.com/beta/ref-data/symbols?&token=" + IEX_TOKEN)
             .catch(err => console.log(err));
         }
         console.log("🏁 Script Complete 🏁");
-        process.exit();
+        //process.exit();
     })
     .catch((err) => {
         console.log("AXIOS ERROR: " + err.response.status + " - " + err.response.statusText)

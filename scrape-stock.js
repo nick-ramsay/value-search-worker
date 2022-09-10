@@ -33,7 +33,7 @@ module.exports = (tickerSymbol) => {
 
             db.StockData.updateOne(
                 { symbol: tickerSymbol },
-                { symbol: tickerSymbol, fundamentals: result, lastUpdated: Date() },
+                { symbol: tickerSymbol, fundamentals: result, fundamentalsLastUpdated: Date() },
                 { upsert: true }
             )
                 .then(console.log("Symbol '" + tickerSymbol + "' fetched successfully 🎉"))
