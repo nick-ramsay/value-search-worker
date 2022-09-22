@@ -1,4 +1,4 @@
-module.exports = (tickerSymbol) => {
+module.exports = (tickerSymbol, fullSymbolData) => {
 
     require('dotenv').config()
     const axios = require("axios");
@@ -21,15 +21,21 @@ module.exports = (tickerSymbol) => {
 
             db.StockData.updateOne(
                 { symbol: tickerSymbol },
-                { quote: currentQuote, quoteLastUpdated: Date() },
+                { quote: currentQuote, symbolData: fullSymbolData, quoteLastUpdated: Date() },
                 { upsert: true }
             )
-                .then(console.log("Symbol '" + tickerSymbol + "' fetched successfully 🎉"))
+                .then(
+                    db.StockSymbols.updateOne(
+                        { symbol: tickerSymbol },
+                        { quoteLastUpdated: Date() },
+                        { upsert: true }
+                    )
+                    .catch(err => console.log(err)),
+                    console.log("🎉 Fetched '" + tickerSymbol + "' quote successfully 🎉")
+                    )
                 .catch(err => console.log(err));
-
-            console.log("🎉 Fetched '" + tickerSymbol + "' quote successfully 🎉");
         })
         .catch((err) => {
-            console.log("AXIOS ERROR: " + err);
+            console.log("❌ AXIOS ERROR: " + err + " ❌");
         });
 }

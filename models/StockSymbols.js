@@ -4,7 +4,9 @@ const Schema = mongoose.Schema;
 const StockSymbolsSchema = new Schema({
     symbol: { type: String },
     data: { type: Object },
-    lastUpdated: { type: Date }
+    lastUpdated: { type: Date },
+    quoteLastUpdated: {type: Date},
+    fundamentalsLastUpdated: {type: Date}
 })
 
 const StockSymbols = mongoose.model("StockSymbols", StockSymbolsSchema);

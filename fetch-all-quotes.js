@@ -8,7 +8,7 @@ const db = require("./models");
 //Tokens & Keys
 const uri = process.env.MONGO_URI;
 
-const fetchIEXQuote = (currentSymbol) => {return fetchQuote(currentSymbol)};
+const fetchIEXQuote = (currentSymbol, fullSymbolData) => {return fetchQuote(currentSymbol,fullSymbolData)};
 
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -23,7 +23,7 @@ const beginFetching = () => {
                 .then(async (res) => {
                     for (let i = 0; i < res.length; i++) {
                         await sleep(1000);
-                        fetchIEXQuote(res[i].symbol);
+                        fetchIEXQuote(res[i].symbol, res[i].data);
                     };
                 })
                 .catch(err => console.log(err));

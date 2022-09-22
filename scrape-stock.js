@@ -36,10 +36,16 @@ module.exports = (tickerSymbol) => {
                 { symbol: tickerSymbol, fundamentals: result, fundamentalsLastUpdated: Date() },
                 { upsert: true }
             )
-                .then(console.log("Symbol '" + tickerSymbol + "' fetched successfully 🎉"))
+                .then(
+                    db.StockSymbols.updateOne(
+                        { symbol: tickerSymbol },
+                        { fundamentalsLastUpdated: Date() },
+                        { upsert: true }
+                    )
+                    .catch(err => console.log(err)),
+                    console.log("🎉 Symbol '" + tickerSymbol + "' scraped successfully 🎉")
+                )
                 .catch(err => console.log(err));
-
-            console.log("🎉 Scraped '" + tickerSymbol + "' successfully 🎉");
         })
-    }).catch((err) => { console.log("ERROR: " + err.response.status + " - '" + tickerSymbol + "' " + err.response.statusText) })
+    }).catch((err) => { console.log("❌ ERROR: " + err.response.status + " - '" + tickerSymbol + "' " + err.response.statusText + " ❌") })
 }
