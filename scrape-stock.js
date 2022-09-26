@@ -16,6 +16,9 @@ module.exports = (tickerSymbol) => {
 
             let result = {
                 symbol: tickerSymbol,
+                sector: null,
+                industry: null,
+                country:null,
                 sourceURL: "https://finviz.com/quote.ashx?t=" + tickerSymbol
             };
 
@@ -29,6 +32,18 @@ module.exports = (tickerSymbol) => {
                     currentDataValue = $(elem).text().charAt(0) === "-" || ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].indexOf($(elem).text().charAt(0)) !== -1 ? parseFloat($(elem).text()) : $(elem).text();
                     result[$(elem).text().charAt($(elem).text().length - 1) === "%" ? currentDataName + " (%)" : currentDataName] = currentDataValue;
                 }
+            });
+
+            $("table.fullview-title > tbody > tr:nth-child(3) > td > a:nth-child(1)").each((i,elem) => {
+                result.sector = $(elem).text();
+            });
+
+            $("table.fullview-title > tbody > tr:nth-child(3) > td > a:nth-child(2)").each((i,elem) => {
+                result.industry = $(elem).text();
+            });
+
+            $("table.fullview-title > tbody > tr:nth-child(3) > td > a:nth-child(3)").each((i,elem) => {
+                result.country = $(elem).text();
             });
 
             db.StockData.updateOne(
