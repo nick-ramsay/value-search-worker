@@ -19,7 +19,7 @@ module.exports = (tickerSymbol) => {
                 sector: null,
                 industry: null,
                 country:null,
-                sourceURL: "https://finviz.com/quote.ashx?t=" + tickerSymbol
+                sourceURL: "https://finviz.com/quote.ashx?t=" + tickerSymbol + "&ty=l&ta=0&p=m&tas=0"
             };
 
             let currentDataName = "";
