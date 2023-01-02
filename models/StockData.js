@@ -3,11 +3,13 @@ const Schema = mongoose.Schema;
 
 const StockDataSchema = new Schema({
     symbol: { type: String },
-    symbolData: {type: Object},
+    symbolData: { type: Object },
     quote: { type: Object },
     fundamentals: { type: Object },
+    iexStats: { type: Object },
     quoteLastUpdated: { type: Date },
-    fundamentalsLastUpdated: { type: Date }
+    fundamentalsLastUpdated: { type: Date },
+    iexStatusLastUpdated: { type: Date }
 })
 
 const StockData = mongoose.model("StockData", StockDataSchema);
