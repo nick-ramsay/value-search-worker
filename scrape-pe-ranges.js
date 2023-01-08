@@ -1,14 +1,9 @@
 const axios = require("axios");
 const cheerio = require('cheerio');
 
-axios.get("https://www.macrotrends.net/stocks/charts/AAPL/apple/pe-ratio").then((msRes) => {
+axios.get("https://finbox.com/aapl/explorer/pe_ltm").then((msRes) => {
     //console.log(msRes)
-    let $ = cheerio.load(msRes);
-    console.log($("").attr("aria-label"))
-    /*$(".amcharts-stock-panel-div-stockPanel2").each((i,elem) => {
-        console.log(elem)
-    });*/
-    //#chartdiv > div > div > div.amcharts-panels-div > div.amChartsPanel.amcharts-stock-panel-div.amcharts-stock-panel-div-stockPanel2 > div > div > svg > g:nth-child(13) > g > circle:nth-child(2)
-    //document.querySelector("#chartdiv > div > div > div.amcharts-panels-div > div.amChartsPanel.amcharts-stock-panel-div.amcharts-stock-panel-div-stockPanel2 > div > div > svg > g:nth-child(13) > g > circle:nth-child(2)")
+    let $ = cheerio.load(msRes.data);
+    console.log($("#root > div > div.a34f9a00._6628f037.daf180b3._7b5c218a > div._54f4f3d2 > div.b10520ae > div:nth-child(2) > div:nth-child(2) > div._808a0544.dd197d89 > div.ca8ee078._6f0cee61 > div.de9bf6c0 > table").children("tbody"))
 }).catch((msErr) => { console.log("❌ MORNINGSTAR_ERROR: " + msErr + " - '" + "AAPL" + "' " + msErr + " ❌") });
 
