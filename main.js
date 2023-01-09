@@ -1,5 +1,4 @@
-let fetchQuote = require("./fetch-quote.js");
-let scrapeStock = require("./scrape-stock.js")
+//let fetchQuote = require("./fetch-quote.js")
 
 require('dotenv').config()
 const axios = require("axios");
@@ -10,36 +9,61 @@ const db = require("./models");
 const uri = process.env.MONGO_URI;
 
 const fetchIEXQuote = (currentSymbol, fullSymbolData) => { return fetchQuote(currentSymbol, fullSymbolData) };
-const scrapeFinviz = (currentSymbol) => { return scrapeStock(currentSymbol) };
 
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
-//1. See if I can use vanilla JS to identify 4 PM EST in New York
-// current datetime string in America/Chicago timezone
-let chicago_datetime_str = new Date().toLocaleString("en-US", { timeZone: "America/Chicago" });
+const beginFetching = () => {
+    mongoose.connect(uri)
+        .then(() => {
+            db.StockSymbols.find(
+                {}
+            )
+                .then(async (res) => {
+                    for (let i = 0; i < res.length; i++) {
+                        let currentTime = Date();
+                        let daydiff = 1000 * 60 * 60 * 24;  
+                        
+                        let quoteLastUpdated = res[i].quoteLastUpdated;
+                        let daysSinceQuoteLastUpdated = (new Date(currentTime).getTime() - new Date(quoteLastUpdated).getTime())/daydiff;
 
-// create new Date object
-let date_chicago = new Date(chicago_datetime_str);
+                        let fundamentalsLastUpdated = res[i].fundamentalsLastUpdated;
+                        let daysSinceFundamentalsLastUpdated = (new Date(currentTime).getTime() - new Date(fundamentalsLastUpdated).getTime())/daydiff;
+                        
+                        let iexStatsLastUpdated = res[i].iexStatusLastUpdated;
+                        let daysSinceiexStatsLastUpdated = (new Date(currentTime).getTime() - new Date(iexStatsLastUpdated).getTime())/daydiff
 
-console.log(date_chicago.getFullYear())
-//2. Create test array for symbols
-let dummySymbols = [
-    {
-        symbol: "AAPL",
-        lastUpdated: new Date()
-    },
-    {
-        symbol: "MSFT",
-        lastUpdated: new Date()
-    },
-    {
-        symbol: "GOOGL",
-        lastUpdated: new Date()
-    },
-];
+                        let valueSearchScoreLastUpdated = res[i].valueSearchScoreLastUpdated;
+                        let daysSinceValueSearchScoreLastUpdated = (new Date(currentTime).getTime() - new Date(valueSearchScoreLastUpdated).getTime())/daydiff
+                        
+                        let currentSymbol = res[i].symbol
+                        //console.log(currentSymbol);
+                        await sleep(2000);
+                        //console.log(res[i])
+                        console.log("⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄" + currentSymbol + "⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄")
+                        console.log(currentTime);
+                        console.log("Quote: " + quoteLastUpdated);
+                        console.log("Quote Diff.: " + daysSinceQuoteLastUpdated);
+                        console.log("Fundamentals: " + fundamentalsLastUpdated);
+                        console.log("Fundamentals Diff.: " + daysSinceFundamentalsLastUpdated);
+                        console.log("IEX Stats: " + iexStatsLastUpdated);
+                        console.log("IEX Stats Diff.: " + daysSinceiexStatsLastUpdated);
+                        console.log("Value Search Score: " + valueSearchScoreLastUpdated);
+                        console.log("Value Search Score Diff.: " + daysSinceValueSearchScoreLastUpdated);
+                        console.log("-----------------------------");
 
-//3. Write function that will call each symbol, 
-//check last updated time, then call fetchIEXQuote if symbol hasn't been updated in last 24 hours
+                        /*db.StockData.find(
+                            { "symbol": currentSymbol }
+                        ).then((stockRes) => {
+                            let currentStockData = stockRes[0];
+                            console.log(currentStockData)
+                        })
+                        */
+                    }
+                })
+                .catch(err => console.log(err));
+        });
+    }
 
+    beginFetching();

@@ -22,13 +22,13 @@ module.exports = (tickerSymbol, fullSymbolData) => {
 
             db.StockData.updateOne(
                 { symbol: tickerSymbol },
-                { iexStats: res.data, symbolData: fullSymbolData, iexStatusLastUpdated: Date() },
+                { iexStats: res.data, symbolData: fullSymbolData, iexStatsLastUpdated: Date() },
                 { upsert: true }
             )
                 .then(
                     db.StockSymbols.updateOne(
                         { symbol: tickerSymbol },
-                        { iexStatusLastUpdated: Date() },
+                        { iexStatsLastUpdated: Date() },
                         { upsert: true }
                     )
                         .catch(err => console.log(err)),

@@ -246,9 +246,17 @@ const beginFetching = () => {
                                 { valueSearchScore: valueSearchScore, valueSearchScoreLastUpdated: Date() },
                                 { upsert: true }
                             )
-                                .then(
-                                    console.log("🎉 Saved '" + currentSymbol + "' Value Search Score successfully 🎉")
+                                .then(() => {
+                                    db.StockSymbols.updateOne(
+                                        { symbol: currentSymbol },
+                                        { valueSearchScoreLastUpdated: Date() },
+                                        { upsert: true }
                                     )
+                                        .catch(err => console.log(err));
+
+                                    console.log("🎉 Saved '" + currentSymbol + "' Value Search Score successfully 🎉")
+                                }
+                                )
                                 .catch(err => console.log(err));
                         }
 

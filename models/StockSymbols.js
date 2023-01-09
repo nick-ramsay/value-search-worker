@@ -7,7 +7,9 @@ const StockSymbolsSchema = new Schema({
     lastUpdated: { type: Date },
     quoteLastUpdated: { type: Date },
     fundamentalsLastUpdated: { type: Date },
-    iexStatusLastUpdated: { type: Date }
+    iexStatusLastUpdated: { type: Date },
+    iexStatsLastUpdated: { type: Date },
+    valueSearchScoreLastUpdated: {type: Date}
 })
 
 const StockSymbols = mongoose.model("StockSymbols", StockSymbolsSchema);
