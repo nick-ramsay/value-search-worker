@@ -24,7 +24,7 @@ const beginFetching = () => {
                     for (let i = 0; i < res.length; i++) {
                         let currentSymbol = res[i].symbol
                         //console.log(currentSymbol);
-                        await sleep(5000);
+                        await sleep(2000);
                         db.StockData.find(
                             { "symbol": currentSymbol }
                         ).then((stockRes) => {
@@ -53,6 +53,13 @@ const beginFetching = () => {
                                     && currentStockData.fundamentals["Forward P/E"] !== null
                                     ? currentStockData.fundamentals["Forward P/E"] : undefined;
                             console.log(currentSymbol + " - Future PE: " + futurePE)
+
+                            let profitMargin =
+                                currentStockData.fundamentals !== undefined
+                                    && isNaN(currentStockData.fundamentals["Profit Margin (%)"]) === false
+                                    && currentStockData.fundamentals["Profit Margin (%)"] !== null
+                                    ? currentStockData.fundamentals["Profit Margin (%)"] : undefined;
+                            console.log(currentSymbol + " - Profit Margin (%) " + profitMargin)
 
                             let currentPE = currentStockData.quote !== undefined
                                 && currentStockData.quote.peRatio !== null
@@ -93,6 +100,8 @@ const beginFetching = () => {
                                 healthyPEAttempted: false,
                                 healthyFuturePE: 0,
                                 healthyFuturePEAttempted: false,
+                                profitMarginPositive: 0,
+                                profitMarginPositiveAttempted: false,
                                 forwardPEGreater: 0,
                                 forwardPEGreaterAttempted: false,
                                 healthyDebtEquity: 0,
@@ -137,6 +146,19 @@ const beginFetching = () => {
                                 valueSearchScore.healthyFuturePEAttempted = true;
 
                             }
+                            //Positive Profit Margin
+                            if (profitMargin !== undefined && Number(profitMargin) > 0) {
+                                valueSearchScore.profitMarginPositiveAttempted = true;
+                                valueSearchScore.profitMarginPositive = 2;
+                                valueSearchScore.totalPossiblePoints += 2;
+                                valueSearchScore.totalCalculatedPoints += 2;
+                                valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
+                            } else if (currentPE !== undefined) {
+                                valueSearchScore.totalPossiblePoints += 2
+                                valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
+                                valueSearchScore.profitMarginPositiveAttempted = true;
+
+                            }
                             // - Future PE is Greater than Current PE
 
                             if ((futurePE !== undefined && currentPE !== undefined) && (Number(futurePE) >= Number(currentPE))) {
@@ -155,12 +177,12 @@ const beginFetching = () => {
 
                             if (debtEquity !== undefined && Number(debtEquity) >= 0 && Number(debtEquity) <= 2) {
                                 valueSearchScore.healthyDebtEquityAttempted = true;
-                                valueSearchScore.healthyDebtEquity = 1
-                                valueSearchScore.totalPossiblePoints += 1;
-                                valueSearchScore.totalCalculatedPoints += 1;
+                                valueSearchScore.healthyDebtEquity = 2
+                                valueSearchScore.totalPossiblePoints += 2;
+                                valueSearchScore.totalCalculatedPoints += 2;
                                 valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
                             } else if (debtEquity !== undefined) {
-                                valueSearchScore.totalPossiblePoints += 1;
+                                valueSearchScore.totalPossiblePoints += 2;
                                 valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
                                 valueSearchScore.healthyDebtEquityAttempted = true;
                             }
@@ -203,9 +225,9 @@ const beginFetching = () => {
                                 valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
                                 valueSearchScore.movingAveragesGreaterThanPriceAttempted = true;
                             }
-                            // - Moving Average #2:  ((50d MA * 1.1 >= current price) && (50d MA * .95 <= current price)
+                            // - Moving Average Support #2:  ((50d MA * 1.1 >= current price) && (50d MA * .95 <= current price)
 
-                            if ((twoHundredDayMA !== undefined && fiftyDayMA !== undefined && currentPrice !== undefined) && (Number(twoHundredDayMA) > Number(currentPrice) && (Number(fiftyDayMA) * 1.1) >= Number(currentPrice) && (Number(fiftyDayMA) * .95) <= Number(currentPrice))) {
+                            if ((twoHundredDayMA !== undefined && fiftyDayMA !== undefined && currentPrice !== undefined) && (Number(twoHundredDayMA) > Number(fiftyDayMA) && (Number(fiftyDayMA) * .95) <= Number(currentPrice))) {
                                 valueSearchScore.movingAverageSupportAttempted = true;
                                 valueSearchScore.movingAverageSupport = 1
                                 valueSearchScore.totalPossiblePoints += 1;
