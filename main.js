@@ -1,4 +1,4 @@
-//let fetchQuote = require("./fetch-quote.js")
+let fetchQuote = require("./fetch-quote.js")
 
 require('dotenv').config()
 const axios = require("axios");
@@ -39,8 +39,9 @@ const beginFetching = () => {
                         
                         let currentSymbol = res[i].symbol
                         //console.log(currentSymbol);
-                        await sleep(2000);
+                        await sleep(1000);
                         //console.log(res[i])
+                        /*
                         console.log("⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄" + currentSymbol + "⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄⌄")
                         console.log(currentTime);
                         console.log("Quote: " + quoteLastUpdated);
@@ -52,14 +53,14 @@ const beginFetching = () => {
                         console.log("Value Search Score: " + valueSearchScoreLastUpdated);
                         console.log("Value Search Score Diff.: " + daysSinceValueSearchScoreLastUpdated);
                         console.log("-----------------------------");
-
-                        /*db.StockData.find(
-                            { "symbol": currentSymbol }
-                        ).then((stockRes) => {
-                            let currentStockData = stockRes[0];
-                            console.log(currentStockData)
-                        })
                         */
+
+                        if (daysSinceQuoteLastUpdated >= 1 && daysSinceQuoteLastUpdated !== undefined && isNaN(daysSinceQuoteLastUpdated) === false) {
+                            console.log("Requesting quote refresh for " + currentSymbol);
+                            fetchIEXQuote(currentSymbol, res[i].data);
+                        } else if (daysSinceQuoteLastUpdated < 1) {
+                            console.log("⛔️ " + currentSymbol + " quote already up-to-date ⛔️")
+                        }
                     }
                 })
                 .catch(err => console.log(err));
