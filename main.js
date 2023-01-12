@@ -1,4 +1,6 @@
-let fetchQuote = require("./fetch-quote.js")
+const tracer = require('dd-trace').init();
+
+let fetchQuote = require("./fetch-quote.js");
 
 require('dotenv').config()
 const axios = require("axios");
@@ -56,7 +58,6 @@ const beginFetching = () => {
                         */
 
                         if (daysSinceQuoteLastUpdated >= 1 && daysSinceQuoteLastUpdated !== undefined && isNaN(daysSinceQuoteLastUpdated) === false) {
-                            console.log("Requesting quote refresh for " + currentSymbol);
                             fetchIEXQuote(currentSymbol, res[i].data);
                         } else if (daysSinceQuoteLastUpdated < 1) {
                             console.log("⛔️ " + currentSymbol + " quote already up-to-date ⛔️")

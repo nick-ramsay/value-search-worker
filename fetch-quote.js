@@ -1,4 +1,7 @@
 module.exports = (tickerSymbol, fullSymbolData) => {
+    let stockScore = require("./stock-score.js");
+    const calcStockScore = (currentSymbol) => { return stockScore(currentSymbol) };
+
 
     require('dotenv').config()
     const axios = require("axios");
@@ -12,7 +15,7 @@ module.exports = (tickerSymbol, fullSymbolData) => {
     //let tickerSymbol = "AAAU";
 
     mongoose.connect(uri)
-        .then(() => {}/*console.log("Database Connected Successfully 👍")*/)
+        .then(() => { }/*console.log("Database Connected Successfully 👍")*/)
         .catch(err => console.log(err));
 
     axios.get("https://cloud.iexapis.com/beta/stock/" + tickerSymbol + "/quote/?&token=" + IEX_TOKEN)
@@ -30,9 +33,11 @@ module.exports = (tickerSymbol, fullSymbolData) => {
                         { quoteLastUpdated: Date() },
                         { upsert: true }
                     )
-                    .catch(err => console.log(err)),
-                    console.log("🎉 Fetched '" + tickerSymbol + "' quote successfully 🎉")
-                    )
+                        .catch(err => console.log(err)),
+                    console.log("🎉 Fetched '" + tickerSymbol + "' quote successfully 🎉"),
+                    calcStockScore(tickerSymbol)
+                    
+                )
                 .catch(err => console.log(err));
         })
         .catch((err) => {
