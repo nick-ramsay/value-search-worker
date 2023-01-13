@@ -59,8 +59,15 @@ const beginFetching = () => {
 
                         if (daysSinceQuoteLastUpdated >= 1 && daysSinceQuoteLastUpdated !== undefined && isNaN(daysSinceQuoteLastUpdated) === false) {
                             fetchIEXQuote(currentSymbol, res[i].data);
+                            //console.log("Current Iterator: " + i);
                         } else if (daysSinceQuoteLastUpdated < 1) {
+                            //console.log("Current Iterator: " + i);
+                            //console.log(res.length)
                             console.log("⛔️ " + currentSymbol + " quote already up-to-date ⛔️")
+                        }
+
+                        if (i === (res.length - 1)) {
+                            i = -1;
                         }
                     }
                 })
