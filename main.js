@@ -23,7 +23,7 @@ const beginFetching = () => {
                 {}
             )
                 .then(async (res) => {
-                    for (let i = 0; i < res.length; i++) {
+                    for (let i = 0; res.length; i++) {
                         let currentTime = Date();
                         let daydiff = 1000 * 60 * 60 * 24;  
                         
@@ -65,11 +65,8 @@ const beginFetching = () => {
                             //console.log(res.length)
                             console.log("⛔️ " + currentSymbol + " quote already up-to-date ⛔️")
                         }
-
-                        if (i === (res.length - 1)) {
-                            i = -1;
-                        }
                     }
+                    beginFetching();
                 })
                 .catch(err => console.log(err));
         });
