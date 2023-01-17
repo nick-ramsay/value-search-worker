@@ -19,7 +19,8 @@ module.exports = (tickerSymbol) => {
                 sector: null,
                 industry: null,
                 country:null,
-                sourceURL: "https://finviz.com/quote.ashx?t=" + tickerSymbol + "&ty=l&ta=0&p=m&tas=0"
+                sourceURL: "https://finviz.com/quote.ashx?t=" + tickerSymbol + "&ty=l&ta=0&p=m&tas=0",
+                companyDescription: null
             };
 
             let currentDataName = "";
@@ -44,6 +45,10 @@ module.exports = (tickerSymbol) => {
 
             $("table.fullview-title > tbody > tr:nth-child(3) > td > a:nth-child(3)").each((i,elem) => {
                 result.country = $(elem).text();
+            });
+
+            $("table:nth-child(3) > tbody > tr.table-light3-row > td").each((i,elem) => {
+                result.companyDescription = $(elem).text();
             });
 
             db.StockData.updateOne(
