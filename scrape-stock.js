@@ -18,7 +18,7 @@ module.exports = (tickerSymbol) => {
                 symbol: tickerSymbol,
                 sector: null,
                 industry: null,
-                country:null,
+                country: null,
                 sourceURL: "https://finviz.com/quote.ashx?t=" + tickerSymbol + "&ty=l&ta=0&p=m&tas=0",
                 companyDescription: null
             };
@@ -35,19 +35,19 @@ module.exports = (tickerSymbol) => {
                 }
             });
 
-            $("table.fullview-title > tbody > tr:nth-child(3) > td > a:nth-child(1)").each((i,elem) => {
+            $("table.fullview-title > tbody > tr:nth-child(3) > td > a:nth-child(1)").each((i, elem) => {
                 result.sector = $(elem).text();
             });
 
-            $("table.fullview-title > tbody > tr:nth-child(3) > td > a:nth-child(2)").each((i,elem) => {
+            $("table.fullview-title > tbody > tr:nth-child(3) > td > a:nth-child(2)").each((i, elem) => {
                 result.industry = $(elem).text();
             });
 
-            $("table.fullview-title > tbody > tr:nth-child(3) > td > a:nth-child(3)").each((i,elem) => {
+            $("table.fullview-title > tbody > tr:nth-child(3) > td > a:nth-child(3)").each((i, elem) => {
                 result.country = $(elem).text();
             });
 
-            $("table:nth-child(3) > tbody > tr.table-light3-row > td").each((i,elem) => {
+            $("table:nth-child(3) > tbody > tr.table-light3-row > td").each((i, elem) => {
                 result.companyDescription = $(elem).text();
             });
 
@@ -62,10 +62,15 @@ module.exports = (tickerSymbol) => {
                         { fundamentalsLastUpdated: Date() },
                         { upsert: true }
                     )
-                    .catch(err => console.log(err)),
+                        .catch(err => console.log(err)),
                     console.log("🎉 Symbol '" + tickerSymbol + "' scraped successfully 🎉")
                 )
                 .catch(err => console.log(err));
         })
-    }).catch((err) => { console.log("❌ ERROR: " + err.response.status + " - '" + tickerSymbol + "' " + err.response.statusText + " ❌") })
+    }).catch((err) => {
+        let errorStatusCode = err !== undefined ? err.response.status : "Unknown Status Code";
+        let errorStatusText = err !== undefined ? err.response.statusText : "Unknown Error Text";
+
+        console.log("❌ ERROR: " + errorStatusCode + " - '" + tickerSymbol + "' " + errorStatusText + " ❌")
+    })
 }
