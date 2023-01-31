@@ -5,6 +5,7 @@ const axios = require("axios");
 const mongoose = require('mongoose');
 const db = require("./models");
 
+
 //Tokens & Keys
 const uri = process.env.MONGO_URI;
 
@@ -22,7 +23,7 @@ const beginScraping = () => {
             )
                 .then(async (res) => {
                     for (let i = 0; i < res.length; i++) {
-                        await sleep(3000);
+                        await sleep(2000);
                         scrapeFinviz(res[i].symbol);
                     };
                 })

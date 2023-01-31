@@ -6,6 +6,8 @@ module.exports = (tickerSymbol) => {
     require('dotenv').config()
     const mongoose = require('mongoose');
     const db = require("./models");
+    let stockScore = require("./stock-score.js");
+    const calcStockScore = (currentSymbol) => { return stockScore(currentSymbol) };
 
     //Tokens & Keys
     const uri = process.env.MONGO_URI;
@@ -63,13 +65,15 @@ module.exports = (tickerSymbol) => {
                         { upsert: true }
                     )
                         .catch(err => console.log(err)),
-                    console.log("🎉 Symbol '" + tickerSymbol + "' scraped successfully 🎉")
+                    console.log("🎉 Symbol '" + tickerSymbol + "' scraped successfully 🎉"),
+                    calcStockScore(tickerSymbol)
+                    
                 )
                 .catch(err => console.log(err));
         })
     }).catch((err) => {
-        let errorStatusCode = err !== undefined ? err.response.status : "Unknown Status Code";
-        let errorStatusText = err !== undefined ? err.response.statusText : "Unknown Error Text";
+        let errorStatusCode = err !== undefined && err.response !== undefined ? err.response.status : "Unknown Status Code";
+        let errorStatusText = err !== undefined && err.response !== undefined  ? err.response.statusText : "Unknown Error Text";
 
         console.log("❌ ERROR: " + errorStatusCode + " - '" + tickerSymbol + "' " + errorStatusText + " ❌")
     })
