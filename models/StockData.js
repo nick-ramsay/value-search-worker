@@ -12,7 +12,8 @@ const StockDataSchema = new Schema({
     iexStatsLastUpdated: { type: Date },
     iexStatusLastUpdated: { type: Date },
     valueSearchScore: {type: Object},
-    valueSearchScoreLastUpdated: {type: Date}
+    valueSearchScoreLastUpdated: {type: Date},
+    valueSearchScoreHistory: {type: Array}
 })
 
 const StockData = mongoose.model("StockData", StockDataSchema);

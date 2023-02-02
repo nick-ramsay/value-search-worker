@@ -19,6 +19,12 @@ module.exports = (tickerSymbol) => {
         { "symbol": tickerSymbol }
     ).then((stockRes) => {
         let currentStockData = stockRes[0];
+        let valueSearchScoreHistory = currentStockData.valueSearchScoreHistory !== undefined ? currentStockData.valueSearchScoreHistory:[];
+        let historyTimestamp = new Date().getDate() + "-" + (new Date().getMonth() + 1) + "-" + new Date().getFullYear();
+        console.log(currentStockData);
+        console.log(valueSearchScoreHistory);
+        console.log(historyTimestamp)
+
         /* Scoring Attributes:
          - PE Ratio: Greater than 0, less than/equal to 15
          - Future PE: Greater than 0, less than/equal to 15
@@ -229,9 +235,14 @@ module.exports = (tickerSymbol) => {
             valueSearchScore.movingAverageSupportAttempted = true;
         }
 
+        if (currentStockData.valueSearchScoreHistory.length === 0) {
+            console.log("Push history to empty array");
+            valueSearchScoreHistory.push({date:historyTimestamp, score: valueSearchScore.calculatedScorePercentage});
+        };
+
         db.StockData.updateOne(
             { symbol: tickerSymbol },
-            { valueSearchScore: valueSearchScore, valueSearchScoreLastUpdated: Date() },
+            { valueSearchScore: valueSearchScore, valueSearchScoreLastUpdated: Date(), valueSearchScoreHistory: valueSearchScoreHistory },
             { upsert: true }
         )
             .then(() => {

@@ -23,8 +23,9 @@ const beginFetching = () => {
                 .then(async (res) => {
                     for (let i = 0; i < res.length; i++) {
                         let currentSymbol = res[i].symbol
-                        await sleep(2000);
+                        await sleep(1000);
                         calcStockScore(currentSymbol);
+                        await sleep(10000);
                     }
                 })
                 .catch(err => console.log(err));
