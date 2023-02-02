@@ -236,7 +236,6 @@ module.exports = (tickerSymbol) => {
         }
 
         if (currentStockData.valueSearchScoreHistory.length === 0) {
-            console.log("Push history to empty array");
             valueSearchScoreHistory.push({date:historyTimestamp, score: valueSearchScore.calculatedScorePercentage});
         };
 
