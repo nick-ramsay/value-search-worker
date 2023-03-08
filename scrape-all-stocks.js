@@ -1,3 +1,4 @@
+const tracer = require('dd-trace').init();
 let scrapeStock = require("./scrape-stock.js")
 
 require('dotenv').config()

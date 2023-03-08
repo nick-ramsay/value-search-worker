@@ -2,7 +2,7 @@
   "dependencies": {
     "axios": "^0.27.2",
     "cheerio": "^1.0.0-rc.12",
-    "dd-trace": "^3.11.0",
+    "dd-trace": "^3.15.0",
     "dotenv": "^16.0.2",
     "mongoose": "^6.5.4"
   }

@@ -1,4 +1,5 @@
 
+const tracer = require('dd-trace').init();
 let stockScore = require("./stock-score.js");
 const calcStockScore = (currentSymbol) => { return stockScore(currentSymbol) };
 

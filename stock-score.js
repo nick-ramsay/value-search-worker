@@ -1,4 +1,5 @@
 module.exports = (tickerSymbol) => {
+    const tracer = require('dd-trace').init();
 
     require('dotenv').config()
     const axios = require("axios");
@@ -21,9 +22,9 @@ module.exports = (tickerSymbol) => {
         let currentStockData = stockRes[0];
         let valueSearchScoreHistory = currentStockData.valueSearchScoreHistory !== undefined ? currentStockData.valueSearchScoreHistory:[];
         let historyTimestamp = new Date().getDate() + "-" + (new Date().getMonth() + 1) + "-" + new Date().getFullYear();
-        console.log(currentStockData);
-        console.log(valueSearchScoreHistory);
-        console.log(historyTimestamp)
+        //console.log(currentStockData);
+        //console.log(valueSearchScoreHistory);
+        //console.log(historyTimestamp)
 
         /* Scoring Attributes:
          - PE Ratio: Greater than 0, less than/equal to 15

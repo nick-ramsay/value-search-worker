@@ -1,4 +1,5 @@
 module.exports = (tickerSymbol) => {
+    const tracer = require('dd-trace').init();
 
     const axios = require("axios");
     const cheerio = require('cheerio');

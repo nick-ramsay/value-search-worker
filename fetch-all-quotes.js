@@ -1,3 +1,4 @@
+const tracer = require('dd-trace').init();
 let fetchQuote = require("./fetch-quote.js")
 
 require('dotenv').config()

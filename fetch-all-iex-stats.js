@@ -1,3 +1,4 @@
+const tracer = require('dd-trace').init();
 let fetchStats = require("./fetch-iex-stats.js")
 
 require('dotenv').config()
