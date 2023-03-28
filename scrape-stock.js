@@ -13,7 +13,7 @@ module.exports = (tickerSymbol) => {
     //Tokens & Keys
     const uri = process.env.MONGO_URI;
 
-    axios.get("https://finviz.com/quote.ashx?t=" + tickerSymbol).then((res) => {
+    axios.get("https://finviz.com/quote.ashx?t=" + tickerSymbol.replace(".","-")).then((res) => {
         mongoose.connect(uri).then(() => {
             let $ = cheerio.load(res.data)
 
@@ -22,7 +22,7 @@ module.exports = (tickerSymbol) => {
                 sector: null,
                 industry: null,
                 country: null,
-                sourceURL: "https://finviz.com/quote.ashx?t=" + tickerSymbol + "&ty=l&ta=0&p=m&tas=0",
+                sourceURL: "https://finviz.com/quote.ashx?t=" + tickerSymbol.replace(".","-") + "&ty=l&ta=0&p=m&tas=0",
                 companyDescription: null
             };
 
