@@ -10,7 +10,7 @@ module.exports = (tickerSymbol) => {
     const IEX_TOKEN = process.env.IEX_API_KEY;
     const uri = process.env.MONGO_URI;
 
-    //let tickerSymbol = "AAAU";
+    //let tickerSymbol = "A";
 
     mongoose.connect(uri)
         .then(() => { }/*console.log("Database Connected Successfully 👍")*/)
@@ -20,7 +20,7 @@ module.exports = (tickerSymbol) => {
         { "symbol": tickerSymbol }
     ).then((stockRes) => {
         let currentStockData = stockRes[0];
-        let valueSearchScoreHistory = currentStockData.valueSearchScoreHistory !== undefined ? currentStockData.valueSearchScoreHistory:[];
+        let valueSearchScoreHistory = currentStockData.valueSearchScoreHistory !== undefined ? currentStockData.valueSearchScoreHistory : [];
         let historyTimestamp = new Date().getDate() + "-" + (new Date().getMonth() + 1) + "-" + new Date().getFullYear();
         //console.log(currentStockData);
         //console.log(valueSearchScoreHistory);
@@ -92,6 +92,24 @@ module.exports = (tickerSymbol) => {
             ? currentStockData.iexStats.day50MovingAvg : undefined;
         //console.log(tickerSymbol + " - 50d MA: " + fiftyDayMA)
 
+        let returnOnEquity = currentStockData.fundamentals !== undefined
+            && isNaN(currentStockData.fundamentals["ROE (%)"]) === false
+            && currentStockData.fundamentals["ROE (%)"] !== null
+            ? currentStockData.fundamentals["ROE (%)"] : undefined;
+        //console.log(tickerSymbol + " - Return on Equity: " + returnOnEquity)
+
+        let priceToEarningsGrowth = currentStockData.fundamentals !== undefined
+            && isNaN(currentStockData.fundamentals["PEG"]) === false
+            && currentStockData.fundamentals["PEG"] !== null
+            ? currentStockData.fundamentals["PEG"] : undefined;
+        //console.log(tickerSymbol + " - Price/Earnings Growth: " + priceToEarningsGrowth)
+
+        let relativeStengthIndex = currentStockData.fundamentals !== undefined
+            && isNaN(currentStockData.fundamentals["RSI (14)"]) === false
+            && currentStockData.fundamentals["RSI (14)"] !== null
+            ? currentStockData.fundamentals["RSI (14)"] : undefined;
+        //console.log(tickerSymbol + " - RSI: " + relativeStengthIndex)
+
         let valueSearchScore = {
             healthyPE: 0,
             healthyPEAttempted: false,
@@ -111,6 +129,12 @@ module.exports = (tickerSymbol) => {
             movingAveragesGreaterThanPriceAttempted: false,
             movingAverageSupport: 0,
             movingAverageSupportAttempted: false,
+            returnOnEquity: 0,
+            returnOnEquityAttempted: false,
+            priceToEarningsGrowth: 0,
+            priceToEarningsGrowthAttempted: false,
+            relativeStengthIndex: 0,
+            relativeStengthIndexAttempted: false,
             totalCalculatedPoints: 0,
             totalPossiblePoints: 0,
             calculatedScorePercentage: 0
@@ -236,8 +260,55 @@ module.exports = (tickerSymbol) => {
             valueSearchScore.movingAverageSupportAttempted = true;
         }
 
+        // - Return on Equity: Greater than or equal to 15%
+
+        if (returnOnEquity !== undefined && Number(returnOnEquity) >= 15) {
+            valueSearchScore.returnOnEquityAttempted = true;
+            valueSearchScore.returnOnEquity = 1
+            valueSearchScore.totalPossiblePoints += 1;
+            valueSearchScore.totalCalculatedPoints += 1;
+            valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
+        } else if (returnOnEquity !== undefined) {
+            valueSearchScore.totalPossiblePoints += 1;
+            valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
+            valueSearchScore.returnOnEquityAttempted = true;
+        }
+
+        // - PEG
+
+        if (priceToEarningsGrowth !== undefined && Number(priceToEarningsGrowth) <= 1) {
+            valueSearchScore.priceToEarningsGrowthAttempted = true;
+            valueSearchScore.priceToEarningsGrowth = 2
+            valueSearchScore.totalPossiblePoints += 2;
+            valueSearchScore.totalCalculatedPoints += 2;
+            valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
+        } else if (priceToEarningsGrowth !== undefined) {
+            valueSearchScore.totalPossiblePoints += 2;
+            valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
+            valueSearchScore.priceToEarningsGrowthAttempted = true;
+        }
+
+
+        if (relativeStengthIndex !== undefined && Number(relativeStengthIndex) <= 30) {
+            valueSearchScore.relativeStengthIndexAttempted = true;
+            valueSearchScore.relativeStengthIndex = 2
+            valueSearchScore.totalPossiblePoints += 2;
+            valueSearchScore.totalCalculatedPoints += 2;
+            valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
+        } else if (relativeStengthIndex !== undefined && Number(relativeStengthIndex) > 30 && Number(relativeStengthIndex) < 70) {
+            valueSearchScore.relativeStengthIndexAttempted = true;
+            valueSearchScore.relativeStengthIndex = 1
+            valueSearchScore.totalPossiblePoints += 1;
+            valueSearchScore.totalCalculatedPoints += 1;
+            valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
+        } else if (relativeStengthIndex !== undefined) {
+            valueSearchScore.totalPossiblePoints += 2;
+            valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
+            valueSearchScore.relativeStengthIndex = true;
+        }
+
         if (currentStockData.valueSearchScoreHistory.length === 0) {
-            valueSearchScoreHistory.push({date:historyTimestamp, score: valueSearchScore.calculatedScorePercentage});
+            valueSearchScoreHistory.push({ date: historyTimestamp, score: valueSearchScore.calculatedScorePercentage });
         };
 
         db.StockData.updateOne(

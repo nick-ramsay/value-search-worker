@@ -26,7 +26,7 @@ const beginFetching = () => {
                         let currentSymbol = res[i].symbol
                         await sleep(1000);
                         calcStockScore(currentSymbol);
-                        await sleep(10000);
+                        await sleep(1000);
                     }
                 })
                 .catch(err => console.log(err));
