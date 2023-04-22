@@ -298,8 +298,8 @@ module.exports = (tickerSymbol) => {
         } else if (relativeStengthIndex !== undefined && Number(relativeStengthIndex) > 30 && Number(relativeStengthIndex) < 70) {
             valueSearchScore.relativeStengthIndexAttempted = true;
             valueSearchScore.relativeStengthIndex = 1
-            valueSearchScore.totalPossiblePoints += 1;
-            valueSearchScore.totalCalculatedPoints += 1;
+            valueSearchScore.totalPossiblePoints += 2;
+            valueSearchScore.totalCalculatedPoints += 2;
             valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
         } else if (relativeStengthIndex !== undefined) {
             valueSearchScore.totalPossiblePoints += 2;
