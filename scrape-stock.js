@@ -50,7 +50,7 @@ module.exports = (tickerSymbol) => {
                 result.country = $(elem).text();
             });
 
-            $("table:nth-child(3) > tbody > tr.table-light3-row > td").each((i, elem) => {
+            $("table:nth-child(2) > tbody > tr.table-light3-row > td > div").each((i, elem) => {
                 result.companyDescription = $(elem).text();
             });
 
