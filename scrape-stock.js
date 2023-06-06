@@ -38,15 +38,15 @@ module.exports = (tickerSymbol) => {
                 }
             });
 
-            $("table.fullview-title > tbody > tr:nth-child(3) > td > a:nth-child(1)").each((i, elem) => {
+            $("table.fullview-title > tbody > tr:nth-child(2) > td > a:nth-child(1)").each((i, elem) => {
                 result.sector = $(elem).text();
             });
 
-            $("table.fullview-title > tbody > tr:nth-child(3) > td > a:nth-child(2)").each((i, elem) => {
+            $("table.fullview-title > tbody > tr:nth-child(2) > td > a:nth-child(2)").each((i, elem) => {
                 result.industry = $(elem).text();
             });
 
-            $("table.fullview-title > tbody > tr:nth-child(3) > td > a:nth-child(3)").each((i, elem) => {
+            $("table.fullview-title > tbody > tr:nth-child(2) > td > a:nth-child(3)").each((i, elem) => {
                 result.country = $(elem).text();
             });
 
