@@ -62,25 +62,29 @@ module.exports = (tickerSymbol) => {
         });
 
         $(
-          "table.fullview-title > tbody > tr:nth-child(2) > td > a:nth-child(1)"
+          "div.quote-links > div:nth-child(1) > a:nth-child(1)"
         ).each((i, elem) => {
+          console.log("Sector: " + $(elem).text());
           result.sector = $(elem).text();
         });
 
         $(
-          "table.fullview-title > tbody > tr:nth-child(2) > td > a:nth-child(2)"
+          "div.quote-links > div:nth-child(1) > a:nth-child(3)"
         ).each((i, elem) => {
+          console.log("Industry: " + $(elem).text());
           result.industry = $(elem).text();
         });
 
         $(
-          "table.fullview-title > tbody > tr:nth-child(2) > td > a:nth-child(3)"
+          "div.quote-links > div:nth-child(1) > a:nth-child(5)"
         ).each((i, elem) => {
+          console.log("Country: " + $(elem).text());
           result.country = $(elem).text();
         });
 
         $("table:nth-child(2) > tbody > tr.table-light3-row > td > div").each(
           (i, elem) => {
+            console.log($(elem).text());
             result.companyDescription = $(elem).text();
           }
         );
