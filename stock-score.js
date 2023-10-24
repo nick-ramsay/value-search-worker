@@ -98,6 +98,12 @@ module.exports = (tickerSymbol) => {
             ? currentStockData.fundamentals["ROE (%)"] : undefined;
         //console.log(tickerSymbol + " - Return on Equity: " + returnOnEquity)
 
+        let returnOnInvestment = currentStockData.fundamentals !== undefined
+            && isNaN(currentStockData.fundamentals["ROI (%)"]) === false
+            && currentStockData.fundamentals["ROI (%)"] !== null
+            ? currentStockData.fundamentals["ROI (%)"] : undefined;
+        console.log(tickerSymbol + " - Return on Investment: " + returnOnInvestment)
+
         let priceToEarningsGrowth = currentStockData.fundamentals !== undefined
             && isNaN(currentStockData.fundamentals["PEG"]) === false
             && currentStockData.fundamentals["PEG"] !== null
@@ -131,6 +137,8 @@ module.exports = (tickerSymbol) => {
             movingAverageSupportAttempted: false,
             returnOnEquity: 0,
             returnOnEquityAttempted: false,
+            returnOnInvestment:0,
+            returnOnInvestmentAttempted: false,
             priceToEarningsGrowth: 0,
             priceToEarningsGrowthAttempted: false,
             relativeStengthIndex: 0,
@@ -274,6 +282,20 @@ module.exports = (tickerSymbol) => {
             valueSearchScore.returnOnEquityAttempted = true;
         }
 
+        // - Return on Investment: Greater than or equal to 10%
+
+        if (returnOnInvestment!== undefined && Number(returnOnInvestment) >= 10.5) {
+            valueSearchScore.returnOnInvestmentAttempted = true;
+            valueSearchScore.returnOnInvestment = 2
+            valueSearchScore.totalPossiblePoints += 2;
+            valueSearchScore.totalCalculatedPoints += 2;
+            valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
+        } else if (returnOnInvestment !== undefined) {
+            valueSearchScore.totalPossiblePoints += 2;
+            valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
+            valueSearchScore.returnOnInvestmentAttempted = true;
+        }
+
         // - PEG
 
         if (priceToEarningsGrowth !== undefined && Number(priceToEarningsGrowth) <= 1) {
@@ -297,7 +319,7 @@ module.exports = (tickerSymbol) => {
             valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
         } else if (relativeStengthIndex !== undefined && Number(relativeStengthIndex) > 30 && Number(relativeStengthIndex) < 70) {
             valueSearchScore.relativeStengthIndexAttempted = true;
-            valueSearchScore.relativeStengthIndex = 1
+            valueSearchScore.relativeStengthIndex = 2
             valueSearchScore.totalPossiblePoints += 2;
             valueSearchScore.totalCalculatedPoints += 2;
             valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
