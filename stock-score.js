@@ -98,6 +98,12 @@ module.exports = () => {
             ? currentStockData.fundamentals["ROE (%)"] : undefined;
         //console.log(tickerSymbol + " - Return on Equity: " + returnOnEquity)
 
+        let returnOnInvestment = currentStockData.fundamentals !== undefined
+            && isNaN(currentStockData.fundamentals["ROI (%)"]) === false
+            && currentStockData.fundamentals["ROI (%)"] !== null
+            ? currentStockData.fundamentals["ROI (%)"] : undefined;
+        //console.log(tickerSymbol + " - Return on Investment: " + returnOnInvestment)
+
         let priceToEarningsGrowth = currentStockData.fundamentals !== undefined
             && isNaN(currentStockData.fundamentals["PEG"]) === false
             && currentStockData.fundamentals["PEG"] !== null
@@ -109,6 +115,18 @@ module.exports = () => {
             && currentStockData.fundamentals["RSI (14)"] !== null
             ? currentStockData.fundamentals["RSI (14)"] : undefined;
         //console.log(tickerSymbol + " - RSI: " + relativeStengthIndex)
+
+        let earningsPerShare = currentStockData.fundamentals !== undefined
+            && isNaN(currentStockData.fundamentals["EPS (ttm)"]) === false
+            && currentStockData.fundamentals["EPS (ttm)"] !== null
+            ? currentStockData.fundamentals["EPS (ttm)"] : undefined;
+        console.log(tickerSymbol + " - EPS: " + earningsPerShare)
+
+        let earningsPerShareNextYear = currentStockData.fundamentals !== undefined
+            && isNaN(currentStockData.fundamentals["EPS next Y"]) === false
+            && currentStockData.fundamentals["EPS next Y"] !== null
+            ? currentStockData.fundamentals["EPS next Y"] : undefined;
+        console.log(tickerSymbol + " - EPS: " + earningsPerShareNextYear)
 
         let valueSearchScore = {
             healthyPE: 0,
@@ -131,10 +149,14 @@ module.exports = () => {
             movingAverageSupportAttempted: false,
             returnOnEquity: 0,
             returnOnEquityAttempted: false,
+            returnOnInvestment: 0,
+            returnOnInvestmentAttempted: false,
             priceToEarningsGrowth: 0,
             priceToEarningsGrowthAttempted: false,
             relativeStengthIndex: 0,
             relativeStengthIndexAttempted: false,
+            earningsPerShareGrowingNextYear: 0,
+            earningsPerShareGrowingNextYearAttempted: false,
             totalCalculatedPoints: 0,
             totalPossiblePoints: 0,
             calculatedScorePercentage: 0
@@ -274,6 +296,34 @@ module.exports = () => {
             valueSearchScore.returnOnEquityAttempted = true;
         }
 
+        // - Return on Investment: Greater than or equal to 10%
+
+        if (returnOnInvestment !== undefined && Number(returnOnInvestment) >= 10.5) {
+            valueSearchScore.returnOnInvestmentAttempted = true;
+            valueSearchScore.returnOnInvestment = 2
+            valueSearchScore.totalPossiblePoints += 2;
+            valueSearchScore.totalCalculatedPoints += 2;
+            valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
+        } else if (returnOnInvestment !== undefined) {
+            valueSearchScore.totalPossiblePoints += 2;
+            valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
+            valueSearchScore.returnOnInvestmentAttempted = true;
+        }
+
+        // - Earning Per Share Greater Next Year
+
+        if ((earningsPerShare !== undefined && earningsPerShareNextYear !== undefined) && (Number(earningsPerShareNextYear) > Number(earningsPerShare))) {
+            valueSearchScore.earningsPerShareGrowingNextYearAttempted = true;
+            valueSearchScore.earningsPerShareGrowingNextYear = 2
+            valueSearchScore.totalPossiblePoints += 2;
+            valueSearchScore.totalCalculatedPoints += 2;
+            valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
+        } else if ((earningsPerShare !== undefined && earningsPerShareNextYear !== undefined)) {
+            valueSearchScore.totalPossiblePoints += 2;
+            valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
+            valueSearchScore.earningsPerShareGrowingNextYearAttempted = true;
+        }
+
         // - PEG
 
         if (priceToEarningsGrowth !== undefined && Number(priceToEarningsGrowth) <= 1) {
@@ -297,7 +347,7 @@ module.exports = () => {
             valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
         } else if (relativeStengthIndex !== undefined && Number(relativeStengthIndex) > 30 && Number(relativeStengthIndex) < 70) {
             valueSearchScore.relativeStengthIndexAttempted = true;
-            valueSearchScore.relativeStengthIndex = 1
+            valueSearchScore.relativeStengthIndex = 2
             valueSearchScore.totalPossiblePoints += 2;
             valueSearchScore.totalCalculatedPoints += 2;
             valueSearchScore.calculatedScorePercentage = valueSearchScore.totalCalculatedPoints / valueSearchScore.totalPossiblePoints
