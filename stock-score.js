@@ -1,4 +1,4 @@
-module.exports = () => {
+module.exports = (tickerSymbol) => {
     const tracer = require('dd-trace').init();
 
     require('dotenv').config()
@@ -10,7 +10,7 @@ module.exports = () => {
     const IEX_TOKEN = process.env.IEX_API_KEY;
     const uri = process.env.MONGO_URI;
 
-    let tickerSymbol = "-H";
+    //let tickerSymbol = "-H";
 
     mongoose.connect(uri)
         .then(() => { }/*console.log("Database Connected Successfully 👍")*/)
