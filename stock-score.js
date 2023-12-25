@@ -120,13 +120,13 @@ module.exports = (tickerSymbol) => {
             && isNaN(currentStockData.fundamentals["EPS (ttm)"]) === false
             && currentStockData.fundamentals["EPS (ttm)"] !== null
             ? currentStockData.fundamentals["EPS (ttm)"] : undefined;
-        console.log(tickerSymbol + " - EPS: " + earningsPerShare)
+        //console.log(tickerSymbol + " - EPS: " + earningsPerShare)
 
         let earningsPerShareNextYear = currentStockData.fundamentals !== undefined
             && isNaN(currentStockData.fundamentals["EPS next Y"]) === false
             && currentStockData.fundamentals["EPS next Y"] !== null
             ? currentStockData.fundamentals["EPS next Y"] : undefined;
-        console.log(tickerSymbol + " - EPS: " + earningsPerShareNextYear)
+        //console.log(tickerSymbol + " - EPS: " + earningsPerShareNextYear)
 
         let valueSearchScore = {
             healthyPE: 0,
@@ -362,9 +362,6 @@ module.exports = (tickerSymbol) => {
         } else if (currentStockData.valueSearchScoreHistory.findIndex(vssh => vssh.date === historyTimestamp) !== -1) {
             currentStockData.valueSearchScoreHistory[currentStockData.valueSearchScoreHistory.findIndex(vssh => vssh.date === historyTimestamp)].score = valueSearchScore.calculatedScorePercentage;
         }
-
-        console.log(valueSearchScore.calculatedScorePercentage);
-        console.log(valueSearchScoreHistory)
 
         db.StockData.updateOne(
             { symbol: tickerSymbol },
