@@ -1,4 +1,4 @@
-module.exports = (tickerSymbol) => {
+module.exports = () => {
     const tracer = require('dd-trace').init();
 
     require('dotenv').config()
@@ -10,7 +10,7 @@ module.exports = (tickerSymbol) => {
     const IEX_TOKEN = process.env.IEX_API_KEY;
     const uri = process.env.MONGO_URI;
 
-    //let tickerSymbol = "A";
+    let tickerSymbol = "-H";
 
     mongoose.connect(uri)
         .then(() => { }/*console.log("Database Connected Successfully 👍")*/)
@@ -307,9 +307,14 @@ module.exports = (tickerSymbol) => {
             valueSearchScore.relativeStengthIndex = true;
         }
 
-        if (currentStockData.valueSearchScoreHistory.length === 0) {
+        if (currentStockData.valueSearchScoreHistory.length === 0 || currentStockData.valueSearchScoreHistory == undefined || currentStockData.valueSearchScoreHistory.findIndex(vssh => vssh.date === historyTimestamp) === -1) {
             valueSearchScoreHistory.push({ date: historyTimestamp, score: valueSearchScore.calculatedScorePercentage });
-        };
+        } else if (currentStockData.valueSearchScoreHistory.findIndex(vssh => vssh.date === historyTimestamp) !== -1) {
+            currentStockData.valueSearchScoreHistory[currentStockData.valueSearchScoreHistory.findIndex(vssh => vssh.date === historyTimestamp)].score = valueSearchScore.calculatedScorePercentage;
+        }
+
+        console.log(valueSearchScore.calculatedScorePercentage);
+        console.log(valueSearchScoreHistory)
 
         db.StockData.updateOne(
             { symbol: tickerSymbol },
