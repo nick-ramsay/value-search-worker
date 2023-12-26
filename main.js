@@ -1,4 +1,5 @@
 const tracer = require("dd-trace").init();
+const { DateTime } = require("luxon");;
 
 let fetchQuote = require("./fetch-quote.js");
 
@@ -89,8 +90,14 @@ const beginFetching = () => {
   });
 };
 
+const initiateFetching = () => {
+  let currentTimestamp = DateTime.now().setZone("America/New_York").ts
+  setInterval(() => { currentTimestamp = DateTime.now().setZone("America/New_York"); console.log(currentTimestamp) }, 1000)
+}
+
 const start = () => {
-  beginFetching();
+  //beginFetching();
+  initiateFetching();
 };
 
 start();
