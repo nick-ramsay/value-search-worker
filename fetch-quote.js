@@ -42,6 +42,6 @@ module.exports = (tickerSymbol, fullSymbolData) => {
                 .catch(err => console.log(err));
         })
         .catch((err) => {
-            console.log("❌ AXIOS ERROR: " + err + " ❌");
+            console.log("❌ " + tickerSymbol + " - AXIOS ERROR: " + err + " ❌");
         });
 }

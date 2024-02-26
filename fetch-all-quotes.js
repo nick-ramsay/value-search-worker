@@ -23,8 +23,12 @@ const beginFetching = () => {
             )
                 .then(async (res) => {
                     for (let i = 0; i < res.length; i++) {
-                        await sleep(1000);
-                        fetchIEXQuote(res[i].symbol, res[i].data);
+                        if ((new Date - res[i].quoteLastUpdated)/(1000 * 60 * 60 * 24) > .5) {
+                            await sleep(1000);
+                            fetchIEXQuote(res[i].symbol, res[i].data);
+                        } else {
+                            console.log("🆗 " + res[i].symbol + " already updated today 🆗")
+                        }
                     };
                 })
                 .catch(err => console.log(err));
