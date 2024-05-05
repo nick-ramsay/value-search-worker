@@ -37,30 +37,56 @@ const refreshSymbols = () => {
 };
 
 const checker = (symbol) => {
+
+    const addLeadingZeroToMinute = (minute) => {
+        let tempMinute = minute;
+        if(tempMinute < 10) {
+            return String("0")
+        } else {
+            return ""
+        }
+    }
+
+    let currentTimestamp = new Date();
+    let currentDayOfWeek = currentTimestamp.getDay()
+    let currentHour = currentTimestamp.getHours();
+    let currentMinute = currentTimestamp.getMinutes();
+    let currentTime = Number(String(currentHour) + addLeadingZeroToMinute(currentMinute) + String(currentMinute));
+
+    let eligibleDaysOfWeek = [2, 3, 4, 5, 6];
+    
+    let startingHour = 6;
+    let startingMinute = 30;
+    let startingTime = Number(String(startingHour) + addLeadingZeroToMinute(startingMinute) + String(startingMinute));
+
     let daysSinceQuoteUpdate = 0;
     let daysSinceLastScraped = 0;
+
     db.StockSymbols.find(
         { "symbol": symbol }
     )
         .then(async (res) => {
             daysSinceQuoteUpdate = (new Date().getTime() - new Date(res[0].quoteLastUpdated).getTime()) / (1000 * 60 * 60 * 24);
             daysSinceLastScraped = (new Date().getTime() - new Date(res[0].fundamentalsLastUpdated).getTime()) / (1000 * 60 * 60 * 24);
-            //console.log(daysSinceLastScraped)
 
-            if (daysSinceQuoteUpdate >= 1) {
-                fetchIEXQuote(res[0].symbol);
+            if (eligibleDaysOfWeek.indexOf(currentDayOfWeek) !== -1 && currentTime > startingTime === true) {
+                if (daysSinceQuoteUpdate >= 1) {
+                    fetchIEXQuote(res[0].symbol);
+                } else {
+                    console.log("👍 " + res[0].symbol + " ('" + res[0].data.name + "') quote already up-to-date 👍")
+                }
+
+                if (daysSinceLastScraped >= 7 && daysSinceLastScraped !== NaN) {
+                    scrapeFinviz(res[0].symbol);
+                }
+                else if (res[0].fundamentalsLastUpdated === undefined) {
+                    scrapeFinviz(res[0].symbol);
+                }
+                else {
+                    console.log("👍 " + res[0].symbol + " ('" + res[0].data.name + "') fundamentals already up-to-date 👍")
+                }
             } else {
-                console.log("👍 " + res[0].symbol + " ('" + res[0].data.name + "') quote already up-to-date 👍")
-            }
-
-            if (daysSinceLastScraped >= 1 && daysSinceLastScraped !== NaN) {
-                scrapeFinviz(res[0].symbol);
-            }
-            else if (res[0].fundamentalsLastUpdated === undefined) {
-                scrapeFinviz(res[0].symbol);
-            }
-            else {
-                console.log("👍 " + res[0].symbol + " ('" + res[0].data.name + "') fundamentals already up-to-date 👍")
+                console.log( "💤 [" + new Date(currentTimestamp) + "] Current Time is outside specified operating hours  💤")
             }
 
         })
