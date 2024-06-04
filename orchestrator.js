@@ -97,6 +97,9 @@ const startChecking = async () => {
     for (let i = 0; i < symbols.length; i++) {
         await sleep(3000);
         checker(symbols[i].symbol);
+        if (i === symbols.length) {
+            i = 0;
+        }
     }
 };
 
