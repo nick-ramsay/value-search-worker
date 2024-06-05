@@ -127,7 +127,7 @@ const startChecking = async () => {
             ddsource: 'nodejs',
             host: process.env.HOST,
             ddtags: 'env:production,version:1.0',
-            message: 'Orchestrator excuted on "' + symbols[i].data.name + '" (' + symbols[i].symbol + ') - Index: ' + i ,
+            message: 'Orchestrator executed on "' + symbols[i].data.name + '" (' + symbols[i].symbol + ') - Index: ' + i ,
             service: 'value-search-worker',
             currentIndex: i,
             symbol: symbols[i].symbol,
