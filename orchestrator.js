@@ -120,10 +120,8 @@ const checker = (symbol) => {
 };
 
 const startChecking = async () => {
-    for (let i = 0; i <= symbols.length; i++) {
-        if (i === (symbols.length)) {
-            i = 0;
-        }
+    for (let i = 0; i < symbols.length; i++) {
+        
         await sleep(3000);
 
         const log = {
@@ -139,6 +137,11 @@ const startChecking = async () => {
         sendLogToDatadog(log);
 
         checker(symbols[i].symbol);
+
+        if (i === (symbols.length - 1)) {
+            console.log(i)
+            i = 0;
+        }
     }
 };
 
