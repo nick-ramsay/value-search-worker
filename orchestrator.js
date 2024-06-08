@@ -95,11 +95,17 @@ const checker = (symbol) => {
             daysSinceQuoteUpdate = (new Date().getTime() - new Date(res[0].quoteLastUpdated).getTime()) / (1000 * 60 * 60 * 24);
             daysSinceLastScraped = (new Date().getTime() - new Date(res[0].fundamentalsLastUpdated).getTime()) / (1000 * 60 * 60 * 24);
 
+            let currentCompanyName = "[NAME_UNAVAILABLE]"
+
+            if (typeof res[0].data !== "undefined") {
+                currentCompanyName = res[0].data.name;
+            }
+
             if (eligibleDaysOfWeek.indexOf(currentDayOfWeek) !== -1 && currentTime > startingTime === true) {
                 if (daysSinceQuoteUpdate >= 1) {
                     fetchIEXQuote(res[0].symbol);
                 } else {
-                    console.log("👍 " + res[0].symbol + " ('" + res[0].data.name + "') quote already up-to-date 👍")
+                    console.log("👍 " + res[0].symbol + " ('" + currentCompanyName + "') quote already up-to-date 👍")
                 }
 
                 if (daysSinceLastScraped >= 7 && daysSinceLastScraped !== NaN) {
@@ -109,7 +115,7 @@ const checker = (symbol) => {
                     scrapeFinviz(res[0].symbol);
                 }
                 else {
-                    console.log("👍 " + res[0].symbol + " ('" + res[0].data.name + "') fundamentals already up-to-date 👍")
+                    console.log("👍 " + res[0].symbol + " ('" + currentCompanyName + "') fundamentals already up-to-date 👍")
                 }
             } else {
                 console.log("💤 [" + new Date(currentTimestamp) + "] Current Time is outside specified operating hours  💤")
@@ -120,19 +126,26 @@ const checker = (symbol) => {
 };
 
 const startChecking = async () => {
-    for (let i = 0; i < symbols.length; i++) {
-        
+    for (let i = 12169; i < symbols.length; i++) {
+        console.log(i);
+
         await sleep(3000);
+
+        let currentCompanyName = "[NAME_UNAVAILABLE]"
+
+        if (typeof symbols[i].data !== "undefined") {
+            currentCompanyName = symbols[i].data.name;
+        }
 
         const log = {
             ddsource: 'nodejs',
             host: process.env.HOST,
             ddtags: 'env:production,version:1.0',
-            message: 'Orchestrator executed on "' + symbols[i].data.name + '" (' + symbols[i].symbol + ') - Index: ' + i ,
+            message: 'Orchestrator executed on "' + currentCompanyName + '" (' + symbols[i].symbol + ') - Index: ' + i,
             service: 'value-search-worker',
             currentIndex: i,
             symbol: symbols[i].symbol,
-            companyName: symbols[i].data.name
+            companyName: currentCompanyName
         };
         sendLogToDatadog(log);
 
