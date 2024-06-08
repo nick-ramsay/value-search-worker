@@ -126,8 +126,7 @@ const checker = (symbol) => {
 };
 
 const startChecking = async () => {
-    for (let i = 12169; i < symbols.length; i++) {
-        console.log(i);
+    for (let i = 0; i < symbols.length; i++) {
 
         await sleep(3000);
 
@@ -152,7 +151,6 @@ const startChecking = async () => {
         checker(symbols[i].symbol);
 
         if (i === (symbols.length - 1)) {
-            console.log(i)
             i = 0;
         }
     }
