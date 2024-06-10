@@ -12,6 +12,37 @@ module.exports = (tickerSymbol) => {
     return stockScore(currentSymbol);
   };
 
+  //DATADOG_LOGS
+
+  const DATADOG_LOGS_URL = "https://http-intake.logs.datadoghq.com/api/v2/logs"
+
+
+  const sendLogToDatadog = async (logs) => {
+      try {
+          const response = await axios.post(
+              DATADOG_LOGS_URL,
+              {
+                  ddsource: 'nodejs',
+                  ddtags: 'env:production,version:1.0',
+                  service: 'value-search-worker',
+                  host: process.env.HOST,
+                  message: logs,
+                  type: "fundamentals-scraped",
+                  symbol: tickerSymbol
+              },
+              {
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'DD-API-KEY': process.env.DATADOG_API_KEY,
+                  },
+              }
+          );
+      } catch (error) {
+          console.error('Error sending log:', error.response ? error.response.data : error.message);
+      }
+  };
+
+
   //Tokens & Keys
   const uri = process.env.MONGO_URI;
 
@@ -24,6 +55,7 @@ module.exports = (tickerSymbol) => {
     .then((res) => {
       mongoose.connect(uri).then(() => {
         let $ = cheerio.load(res.data);
+        let successLog =  "🎉 Symbol '" + tickerSymbol + "' scraped successfully 🎉";
 
         let result = {
           symbol: tickerSymbol,
@@ -100,9 +132,8 @@ module.exports = (tickerSymbol) => {
               { fundamentalsLastUpdated: Date() },
               { upsert: true }
             ).catch((err) => console.log(err)),
-            console.log(
-              "🎉 Symbol '" + tickerSymbol + "' scraped successfully 🎉"
-            ),
+            console.log(successLog),
+            sendLogToDatadog(successLog),
             calcStockScore(tickerSymbol)
           )
           .catch((err) => console.log(err));
@@ -118,14 +149,15 @@ module.exports = (tickerSymbol) => {
           ? err.response.statusText
           : "Unknown Error Text";
 
-      console.log(
+      let errorLog = 
         "❌ ERROR: " +
           errorStatusCode +
           " - '" +
           tickerSymbol +
           "' " +
           errorStatusText +
-          " ❌"
-      );
+          " ❌";
+      console.log(errorLog);
+      sendLogToDatadog(errorLog)
     });
 };

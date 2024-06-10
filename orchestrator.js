@@ -17,6 +17,7 @@ const sendLogToDatadog = async (logs) => {
                 ddsource: 'nodejs',
                 ddtags: 'env:production,version:1.0',
                 service: 'value-search-worker',
+                host: process.env.HOST,
                 message: logs
             },
             {
@@ -26,7 +27,6 @@ const sendLogToDatadog = async (logs) => {
                 },
             }
         );
-        //console.log('Log sent successfully:', response.data);
     } catch (error) {
         console.error('Error sending log:', error.response ? error.response.data : error.message);
     }
@@ -52,17 +52,14 @@ const refreshSymbols = () => {
             )
                 .then(async (res) => {
                     symbols = res;
-                    //console.log(symbols);
                     startChecking();
-                    //setInterval(() => { checker() }, 5000);
-                    //clearInterval(checker());
                 })
                 .catch(err => console.log(err));
         })
         .catch(err => console.log(err));
 };
 
-const checker = (symbol) => {
+const checker = (symbol, currentIndex) => {
 
     const addLeadingZeroToMinute = (minute) => {
         let tempMinute = minute;
@@ -101,11 +98,28 @@ const checker = (symbol) => {
                 currentCompanyName = res[0].data.name;
             }
 
+            let currentLogMessage = "";
+
+            let currentLog = {
+                ddsource: 'nodejs',
+                ddtags: 'env:production,version:1.0',
+                message: currentLogMessage,
+                service: 'value-search-worker',
+                currentIndex: currentIndex,
+                symbol: res[0].symbol,
+                companyName: currentCompanyName
+            };
+
             if (eligibleDaysOfWeek.indexOf(currentDayOfWeek) !== -1 && currentTime > startingTime === true) {
                 if (daysSinceQuoteUpdate >= 1) {
                     fetchIEXQuote(res[0].symbol);
+
                 } else {
-                    console.log("👍 " + res[0].symbol + " ('" + currentCompanyName + "') quote already up-to-date 👍")
+                    currentLogMessage = "👍 " + res[0].symbol + " ('" + currentCompanyName + "') quote already up-to-date 👍";
+                    currentLog.message = currentLogMessage;
+                    currentLog.type = "quote-up-to-date";
+                    console.log(currentLogMessage);
+                    sendLogToDatadog(currentLog)
                 }
 
                 if (daysSinceLastScraped >= 7 && daysSinceLastScraped !== NaN) {
@@ -115,10 +129,18 @@ const checker = (symbol) => {
                     scrapeFinviz(res[0].symbol);
                 }
                 else {
-                    console.log("👍 " + res[0].symbol + " ('" + currentCompanyName + "') fundamentals already up-to-date 👍")
+                    currentLogMessage = "👍 " + res[0].symbol + " ('" + currentCompanyName + "') fundamentals already up-to-date 👍"
+                    currentLog.message = currentLogMessage;
+                    currentLog.type = "fundamentals-up-to-date";
+                    console.log(currentLogMessage);
+                    sendLogToDatadog(currentLog);
                 }
             } else {
-                console.log("💤 [" + new Date(currentTimestamp) + "] Current Time is outside specified operating hours  💤")
+                currentLogMessage = "💤 [" + new Date(currentTimestamp) + "] Current Time is outside specified operating hours  💤";
+                currentLog.message = currentLogMessage;
+                currentLog.type = "sleeping";
+                console.log(currentLogMessage);
+                sendLogToDatadog(currentLog);
             }
 
         })
@@ -136,19 +158,22 @@ const startChecking = async () => {
             currentCompanyName = symbols[i].data.name;
         }
 
+        let orchestratorLogMessage = 'Orchestrator executed on "' + currentCompanyName + '" (' + symbols[i].symbol + ') [Index: ' + i + "]";
+
         const log = {
             ddsource: 'nodejs',
             host: process.env.HOST,
             ddtags: 'env:production,version:1.0',
-            message: 'Orchestrator executed on "' + currentCompanyName + '" (' + symbols[i].symbol + ') - Index: ' + i,
+            message: orchestratorLogMessage,
             service: 'value-search-worker',
+            type: "orchestrator-heartbeat",
             currentIndex: i,
             symbol: symbols[i].symbol,
             companyName: currentCompanyName
         };
         sendLogToDatadog(log);
 
-        checker(symbols[i].symbol);
+        checker(symbols[i].symbol, i);
 
         if (i === (symbols.length - 1)) {
             i = 0;

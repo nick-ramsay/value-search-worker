@@ -13,6 +13,36 @@ module.exports = (tickerSymbol, fullSymbolData) => {
     const IEX_TOKEN = process.env.IEX_API_KEY;
     const uri = process.env.MONGO_URI;
 
+    //DATADOG_LOGS
+
+    const DATADOG_LOGS_URL = "https://http-intake.logs.datadoghq.com/api/v2/logs"
+
+
+    const sendLogToDatadog = async (logs) => {
+        try {
+            const response = await axios.post(
+                DATADOG_LOGS_URL,
+                {
+                    ddsource: 'nodejs',
+                    ddtags: 'env:production,version:1.0',
+                    service: 'value-search-worker',
+                    host: process.env.HOST,
+                    message: logs,
+                    type: "quote-updated",
+                    symbol: tickerSymbol
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'DD-API-KEY': process.env.DATADOG_API_KEY,
+                    },
+                }
+            );
+        } catch (error) {
+            console.error('Error sending log:', error.response ? error.response.data : error.message);
+        }
+    };
+
     //let tickerSymbol = "AAAU";
 
     mongoose.connect(uri)
@@ -22,6 +52,7 @@ module.exports = (tickerSymbol, fullSymbolData) => {
     axios.get("https://cloud.iexapis.com/beta/stock/" + tickerSymbol + "/quote/?&token=" + IEX_TOKEN)
         .then((res) => {
             let currentQuote = res.data;
+            let successLog = "🎉 Fetched '" + tickerSymbol + "' quote successfully 🎉";
 
             db.StockData.updateOne(
                 { symbol: tickerSymbol },
@@ -35,13 +66,16 @@ module.exports = (tickerSymbol, fullSymbolData) => {
                         { upsert: true }
                     )
                         .catch(err => console.log(err)),
-                    console.log("🎉 Fetched '" + tickerSymbol + "' quote successfully 🎉"),
+                    console.log(successLog),
+                    sendLogToDatadog(successLog),
                     calcStockScore(tickerSymbol)
-                    
+
                 )
                 .catch(err => console.log(err));
         })
         .catch((err) => {
-            console.log("❌ " + tickerSymbol + " - AXIOS ERROR: " + err + " ❌");
+            let errorLog = "❌ " + tickerSymbol + " - AXIOS ERROR: " + err + " ❌";
+            sendLogToDatadog(errorLog);
+            console.log(errorLog);
         });
 }
