@@ -18,28 +18,28 @@ module.exports = (tickerSymbol) => {
 
 
   const sendLogToDatadog = async (logs) => {
-      try {
-          const response = await axios.post(
-              DATADOG_LOGS_URL,
-              {
-                  ddsource: 'nodejs',
-                  ddtags: 'env:production,version:1.0',
-                  service: 'value-search-worker',
-                  host: process.env.HOST,
-                  message: logs,
-                  type: "fundamentals-scraped",
-                  symbol: tickerSymbol
-              },
-              {
-                  headers: {
-                      'Content-Type': 'application/json',
-                      'DD-API-KEY': process.env.DATADOG_API_KEY,
-                  },
-              }
-          );
-      } catch (error) {
-          console.error('Error sending log:', error.response ? error.response.data : error.message);
-      }
+    try {
+      const response = await axios.post(
+        DATADOG_LOGS_URL,
+        {
+          ddsource: 'nodejs',
+          ddtags: 'env:production,version:1.0',
+          service: 'value-search-worker',
+          host: process.env.HOST,
+          message: logs,
+          type: "fundamentals-scraped",
+          symbol: tickerSymbol
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'DD-API-KEY': process.env.DATADOG_API_KEY,
+          },
+        }
+      );
+    } catch (error) {
+      console.error('Error sending log:', error.response ? error.response.data : error.message);
+    }
   };
 
 
@@ -55,7 +55,7 @@ module.exports = (tickerSymbol) => {
     .then((res) => {
       mongoose.connect(uri).then(() => {
         let $ = cheerio.load(res.data);
-        let successLog =  "🎉 Symbol '" + tickerSymbol + "' scraped successfully 🎉";
+        let successLog = "🎉 Symbol '" + tickerSymbol + "' scraped successfully 🎉";
 
         let result = {
           symbol: tickerSymbol,
@@ -78,9 +78,9 @@ module.exports = (tickerSymbol) => {
           } else {
             currentDataValue =
               $(elem).text().charAt(0) === "-" ||
-              ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].indexOf(
-                $(elem).text().charAt(0)
-              ) !== -1
+                ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].indexOf(
+                  $(elem).text().charAt(0)
+                ) !== -1
                 ? parseFloat($(elem).text())
                 : $(elem).text();
             result[
@@ -149,14 +149,19 @@ module.exports = (tickerSymbol) => {
           ? err.response.statusText
           : "Unknown Error Text";
 
-      let errorLog = 
+      let errorLog =
         "❌ ERROR: " +
-          errorStatusCode +
-          " - '" +
-          tickerSymbol +
-          "' " +
-          errorStatusText +
-          " ❌";
+        errorStatusCode +
+        " - '" +
+        tickerSymbol +
+        "' " +
+        errorStatusText +
+        " ❌";
+      db.StockSymbols.updateOne(
+        { symbol: tickerSymbol },
+        { fundamentalsLastUpdated: Date() },
+        { upsert: true }
+      ).catch((err) => console.log(err));
       console.log(errorLog);
       sendLogToDatadog(errorLog)
     });
