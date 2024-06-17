@@ -59,6 +59,8 @@ const refreshSymbols = () => {
         .catch(err => console.log(err));
 };
 
+let isEligibleDatetime = false;
+
 const checker = (symbol, currentIndex) => {
 
     const addLeadingZeroToMinute = (minute) => {
@@ -110,7 +112,9 @@ const checker = (symbol, currentIndex) => {
                 companyName: currentCompanyName
             };
 
-            if (eligibleDaysOfWeek.indexOf(currentDayOfWeek) !== -1 && currentTime > startingTime === true) {
+            isEligibleDatetime =  eligibleDaysOfWeek.indexOf(currentDayOfWeek) !== -1 && currentTime > startingTime;
+
+            if (isEligibleDatetime) {
                 if (daysSinceQuoteUpdate >= 1) {
                     fetchIEXQuote(res[0].symbol);
 
@@ -149,6 +153,12 @@ const checker = (symbol, currentIndex) => {
 
 const startChecking = async () => {
     for (let i = 0; i < symbols.length; i++) {
+        
+        switch (isEligibleDatetime) {
+            case false:
+                i = 0;
+                break;
+        }
 
         await sleep(3000);
 
