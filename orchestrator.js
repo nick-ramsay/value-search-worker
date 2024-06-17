@@ -101,6 +101,7 @@ const checker = (symbol, currentIndex) => {
             }
 
             let currentLogMessage = "";
+            let currentSleepLogMessage = "";
 
             let currentLog = {
                 ddsource: 'nodejs',
@@ -112,7 +113,14 @@ const checker = (symbol, currentIndex) => {
                 companyName: currentCompanyName
             };
 
-            isEligibleDatetime =  eligibleDaysOfWeek.indexOf(currentDayOfWeek) !== -1 && currentTime > startingTime;
+            let currentSleepLog = {
+                ddsource: 'nodejs',
+                ddtags: 'env:production,version:1.0',
+                message: currentSleepLogMessage,
+                service: 'value-search-worker'
+            };
+
+            isEligibleDatetime = eligibleDaysOfWeek.indexOf(currentDayOfWeek) !== -1 && currentTime > startingTime;
 
             if (isEligibleDatetime) {
                 if (daysSinceQuoteUpdate >= 1) {
@@ -141,10 +149,19 @@ const checker = (symbol, currentIndex) => {
                 }
             } else {
                 currentLogMessage = "💤 [" + new Date(currentTimestamp) + "] Current Time is outside specified operating hours  💤";
+                currentSleepLogMessage = "💤 [" + new Date(currentTimestamp) + "] Current Time is outside specified operating hours  💤";
                 currentLog.message = currentLogMessage;
                 currentLog.type = "sleeping";
+                currentSleepLog.message = currentSleepLogMessage;
+                currentSleepLog.type = "sleeping";
                 console.log(currentLogMessage);
-                sendLogToDatadog(currentLog);
+                switch (isEligibleDatetime) {
+                    case false:
+                        sendLogToDatadog(currentSleepLog);
+                        break;
+                    default:
+                        sendLogToDatadog(currentLog);
+                }
             }
 
         })
@@ -153,16 +170,8 @@ const checker = (symbol, currentIndex) => {
 
 const startChecking = async () => {
     for (let i = 0; i < symbols.length; i++) {
-        
-        switch (isEligibleDatetime) {
-            case false:
-                i = 0;
-                break;
-        }
 
-        await sleep(3000);
-
-        let currentCompanyName = "[NAME_UNAVAILABLE]"
+        let currentCompanyName = "[NAME_UNAVAILABLE]";
 
         if (typeof symbols[i].data !== "undefined") {
             currentCompanyName = symbols[i].data.name;
@@ -179,9 +188,30 @@ const startChecking = async () => {
             type: "orchestrator-heartbeat",
             currentIndex: i,
             symbol: symbols[i].symbol,
-            companyName: currentCompanyName
+            companyName: isEligibleDatetime ? currentCompanyName : ""
         };
-        sendLogToDatadog(log);
+
+        let orchestratorAsleepLog = '💤 Orchestrator Currently Asleep 💤';
+
+        const sleepLog = {
+            ddsource: 'nodejs',
+            host: process.env.HOST,
+            ddtags: 'env:production,version:1.0',
+            message: orchestratorAsleepLog,
+            service: 'value-search-worker',
+            type: 'orchestrator-heartbeat'
+        };
+
+        switch (isEligibleDatetime) {
+            case false:
+                i = 0;
+                sendLogToDatadog(sleepLog)
+                break;
+            default:
+                sendLogToDatadog(log);
+        }
+
+        await sleep(3000);
 
         checker(symbols[i].symbol, i);
 
