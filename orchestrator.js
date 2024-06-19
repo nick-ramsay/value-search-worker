@@ -123,7 +123,7 @@ const checker = (symbol, currentIndex) => {
             isEligibleDatetime = eligibleDaysOfWeek.indexOf(currentDayOfWeek) !== -1 && currentTime > startingTime;
 
             if (isEligibleDatetime) {
-                if (daysSinceQuoteUpdate >= 1) {
+                if (daysSinceQuoteUpdate >= .9) {
                     fetchIEXQuote(res[0].symbol);
 
                 } else {
