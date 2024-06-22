@@ -134,7 +134,7 @@ const checker = (symbol, currentIndex) => {
                     sendLogToDatadog(currentLog)
                 }
 
-                if (daysSinceLastScraped >= 7 && daysSinceLastScraped !== NaN) {
+                if (daysSinceLastScraped >= 5.5 && daysSinceLastScraped !== NaN) {
                     scrapeFinviz(res[0].symbol);
                 }
                 else if (res[0].fundamentalsLastUpdated === undefined) {
