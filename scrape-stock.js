@@ -72,6 +72,10 @@ module.exports = (tickerSymbol) => {
         let currentDataName = "";
         let currentDataValue = "";
 
+        let currentPrice = undefined;
+        currentPrice = Number($("div > div.quote-price_wrapper > strong").text())
+        result.currentPrice = currentPrice;
+
         $("table.snapshot-table2 > tbody > tr > td").each((i, elem) => {
           if (i === 0 || i % 2 === 0) {
             currentDataName = $(elem).text();
@@ -116,6 +120,27 @@ module.exports = (tickerSymbol) => {
             result.companyDescription = $(elem).text();
           }
         );
+
+        let mva20 = undefined;
+        let mva50 = undefined;
+        let mva200 = undefined;
+
+        if (result["SMA20 (%)"] !== undefined) {
+          mva20 = currentPrice * (1 + (result["SMA20 (%)"]/100));
+          result.mva20 = Number(mva20.toFixed(2));
+        }
+
+        if (result["SMA50 (%)"] !== undefined) {
+          mva50 = currentPrice * (1 + (result["SMA50 (%)"]/100));
+          result.mva50 = Number(mva50.toFixed(2));
+        }
+
+        if (result["SMA200 (%)"] !== undefined) {
+          mva200 = currentPrice * (1 + (result["SMA200 (%)"]/100));
+          result.mva200 = Number(mva200.toFixed(2));
+        }
+
+        console.log(result);
 
         db.StockData.updateOne(
           { symbol: tickerSymbol },

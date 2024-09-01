@@ -7,7 +7,6 @@ module.exports = (tickerSymbol) => {
     const db = require("./models");
 
     //Tokens & Keys
-    const IEX_TOKEN = process.env.IEX_API_KEY;
     const uri = process.env.MONGO_URI;
 
     //let tickerSymbol = "-H";
@@ -37,10 +36,10 @@ module.exports = (tickerSymbol) => {
          - Moving Average #2:  ((50d MA * 1. >= current price) && (50d MA * .95 <= current price)
         */
         let currentPrice =
-            currentStockData.quote !== undefined
-                && isNaN(currentStockData.quote.latestPrice) === false
-                && currentStockData.quote.latestPrice !== null
-                ? currentStockData.quote.latestPrice : undefined;
+            currentStockData.fundamentals !== undefined
+                && isNaN(currentStockData.fundamentals.currentPrice) === false
+                && currentStockData.fundamentals.currentPrice !== null
+                ? currentStockData.fundamentals.currentPrice : undefined;
         //console.log(tickerSymbol + " - Current Price: " + currentPrice)
 
 
@@ -58,9 +57,9 @@ module.exports = (tickerSymbol) => {
                 ? currentStockData.fundamentals["Profit Margin (%)"] : undefined;
         //console.log(tickerSymbol + " - Profit Margin (%) " + profitMargin)
 
-        let currentPE = currentStockData.quote !== undefined
-            && currentStockData.quote.peRatio !== null
-            ? currentStockData.quote.peRatio : undefined;
+        let currentPE = currentStockData.fundamentals !== undefined
+            && currentStockData.fundamentals['P/E'] !== null
+            ? currentStockData.fundamentals['P/E'] : undefined;
         //console.log(tickerSymbol + " - Current PE: " + currentPE)
 
         let debtEquity = currentStockData.fundamentals !== undefined
@@ -82,14 +81,14 @@ module.exports = (tickerSymbol) => {
             ? currentStockData.fundamentals["P/S"] : undefined;
         //console.log(tickerSymbol + " - P/S: " + priceSales)
 
-        let twoHundredDayMA = currentStockData.iexStats !== undefined
-            && currentStockData.iexStats.day200MovingAvg !== null
-            ? currentStockData.iexStats.day200MovingAvg : undefined;
+        let twoHundredDayMA = currentStockData.fundamentals !== undefined
+            && currentStockData.fundamentals.mva200 !== null
+            ? currentStockData.fundamentals.mva200 : undefined;
         //console.log(tickerSymbol + " - 200d MA: " + twoHundredDayMA)
 
-        let fiftyDayMA = currentStockData.iexStats !== undefined
-            && currentStockData.iexStats.day50MovingAvg !== null
-            ? currentStockData.iexStats.day50MovingAvg : undefined;
+        let fiftyDayMA = currentStockData.fundamentals !== undefined
+            && currentStockData.fundamentals.mva50 !== null
+            ? currentStockData.fundamentals.mva50 : undefined;
         //console.log(tickerSymbol + " - 50d MA: " + fiftyDayMA)
 
         let returnOnEquity = currentStockData.fundamentals !== undefined
