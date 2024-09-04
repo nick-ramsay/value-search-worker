@@ -74,7 +74,7 @@ module.exports = (tickerSymbol) => {
 
         let currentPrice = undefined;
         currentPrice = Number($("div > div.quote-price_wrapper > strong").text()).toFixed(2)
-        result.currentPrice = currentPrice;
+        result.currentPrice = Number(currentPrice);
 
         $("table.snapshot-table2 > tbody > tr > td").each((i, elem) => {
           if (i === 0 || i % 2 === 0) {
@@ -121,24 +121,43 @@ module.exports = (tickerSymbol) => {
           }
         );
 
+        let companyName = undefined;
+
+        companyName = $("body > div.content > div.ticker-wrapper.gradient-fade > div.fv-container.py-2\\.5 > div > div.quote-header > div.quote-header_left > div > h2 > a").text().trimStart().trimEnd()
+        result.companyName = companyName;
+
         let mva20 = undefined;
         let mva50 = undefined;
         let mva200 = undefined;
 
         if (result["SMA20 (%)"] !== undefined) {
-          mva20 = currentPrice * (1 + (result["SMA20 (%)"]/100));
-          result.mva20 = Number(mva20.toFixed(2));
+          mva20 = (currentPrice / (1 + (result["SMA20 (%)"]/100))).toFixed(2);
+          result.mva20 = Number(mva20);
         }
 
         if (result["SMA50 (%)"] !== undefined) {
-          mva50 = currentPrice * (1 + (result["SMA50 (%)"]/100));
-          result.mva50 = Number(mva50.toFixed(2));
+          mva50 = (currentPrice / (1 + (result["SMA50 (%)"]/100))).toFixed(2);
+          result.mva50 = Number(mva50);
         }
 
         if (result["SMA200 (%)"] !== undefined) {
-          mva200 = currentPrice * (1 + (result["SMA200 (%)"]/100));
-          result.mva200 = Number(mva200.toFixed(2));
+          mva200 = (currentPrice / (1 + (result["SMA200 (%)"]/100))).toFixed(2);
+          result.mva200 = Number(mva200);
         }
+
+        let low52week = undefined;
+        let high52week = undefined;
+
+        if (result["52W Low (%)"] !== undefined) {
+          low52week = (currentPrice / (1 + (result["52W Low (%)"]/100))).toFixed(2);
+        }
+
+        if (result["52W High (%)"] !== undefined) {
+          high52week = (currentPrice / (1 + (result["52W High (%)"]/100))).toFixed(2);
+        }
+
+        result.low52week = Number(low52week);
+        result.high52week = Number(high52week);
 
         db.StockData.updateOne(
           { symbol: tickerSymbol },
