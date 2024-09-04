@@ -73,7 +73,7 @@ module.exports = (tickerSymbol) => {
         let currentDataValue = "";
 
         let currentPrice = undefined;
-        currentPrice = Number($("div > div.quote-price_wrapper > strong").text())
+        currentPrice = Number($("div > div.quote-price_wrapper > strong").text()).toFixed(2)
         result.currentPrice = currentPrice;
 
         $("table.snapshot-table2 > tbody > tr > td").each((i, elem) => {
@@ -139,8 +139,6 @@ module.exports = (tickerSymbol) => {
           mva200 = currentPrice * (1 + (result["SMA200 (%)"]/100));
           result.mva200 = Number(mva200.toFixed(2));
         }
-
-        console.log(result);
 
         db.StockData.updateOne(
           { symbol: tickerSymbol },
