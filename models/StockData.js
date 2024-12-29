@@ -5,6 +5,7 @@ const StockDataSchema = new Schema({
     symbol: { type: String },
     symbolData: { type: Object },
     quote: { type: Object },
+    fmpQuote: {type: Object},
     fundamentals: { type: Object },
     iexStats: { type: Object },
     quoteLastUpdated: { type: Date },

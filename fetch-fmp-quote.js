@@ -7,10 +7,10 @@ module.exports = (tickerSymbol, fullSymbolData) => {
     require('dotenv').config()
     const axios = require("axios");
     const mongoose = require('mongoose');
-    const db = require("./models");
+    const db = require("./models/index.js");
 
     //Tokens & Keys
-    const POLYGON_TOKEN = process.env.POLYGON_API_KEY;
+    const FMP_TOKEN = process.env.FMP_API_KEY;
     const uri = process.env.MONGO_URI;
 
     //DATADOG_LOGS
@@ -28,7 +28,7 @@ module.exports = (tickerSymbol, fullSymbolData) => {
                     service: 'value-search-worker',
                     host: process.env.HOST,
                     message: logs,
-                    type: "polygon-quote-updated",
+                    type: "quote-updated",
                     symbol: tickerSymbol
                 },
                 {
@@ -49,31 +49,32 @@ module.exports = (tickerSymbol, fullSymbolData) => {
         .then(() => { }/*console.log("Database Connected Successfully 👍")*/)
         .catch(err => console.log(err));
 
-    axios.get("https://api.polygon.io/v2/aggs/ticker/" + tickerSymbol + "/prev?adjusted=true&apiKey=" + POLYGON_TOKEN)
+    axios.get("https://financialmodelingprep.com/api/v3/quote/" + tickerSymbol + "?apikey=" + FMP_TOKEN)
         .then((res) => {
             let currentQuote = res.data;
             let successLog = "🎉 Fetched '" + tickerSymbol + "' quote successfully 🎉";
+            let noDataLog = "⚠️ No FMP Data found for '" + tickerSymbol + "' ⚠️"
 
-            console.log(currentQuote);
+            let selectedLog = currentQuote.length === 0 ? noDataLog:successLog;
 
-            // db.StockData.updateOne(
-            //     { symbol: tickerSymbol },
-            //     { quote: currentQuote, symbolData: fullSymbolData, quoteLastUpdated: Date() },
-            //     { upsert: true }
-            // )
-            //     .then(
-            //         db.StockSymbols.updateOne(
-            //             { symbol: tickerSymbol },
-            //             { quoteLastUpdated: Date() },
-            //             { upsert: true }
-            //         )
-            //             .catch(err => console.log(err)),
-            //         console.log(successLog),
-            //         sendLogToDatadog(successLog),
-            //         calcStockScore(tickerSymbol)
+            db.StockData.updateOne(
+                { symbol: tickerSymbol },
+                { fmpQuote: currentQuote[0], symbolData: fullSymbolData, quoteLastUpdated: Date() },
+                { upsert: true }
+            )
+                .then(
+                    db.StockSymbols.updateOne(
+                        { symbol: tickerSymbol },
+                        { quoteLastUpdated: Date() },
+                        { upsert: true }
+                    )
+                        .catch(err => console.log(err)),
+                    console.log(selectedLog),
+                    sendLogToDatadog(selectedLog),
+                    //calcStockScore(tickerSymbol)
 
-            //     )
-            //     .catch(err => console.log(err));
+                )
+                .catch(err => console.log(err));
         })
         .catch((err) => {
             let errorLog = "❌ " + tickerSymbol + " - AXIOS ERROR: " + err + " ❌";
