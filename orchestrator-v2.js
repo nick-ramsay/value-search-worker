@@ -93,7 +93,6 @@ const checker = (symbol, currentIndex) => {
         .then(async (res) => {
             daysSinceQuoteUpdate = (new Date().getTime() - new Date(res[0].quoteLastUpdated).getTime()) / (1000 * 60 * 60 * 24);
             daysSinceLastScraped = (new Date().getTime() - new Date(res[0].fundamentalsLastUpdated).getTime()) / (1000 * 60 * 60 * 24);
-            console.log("Quote: " + daysSinceQuoteUpdate);
 
             let currentCompanyName = "[NAME_UNAVAILABLE]"
 
