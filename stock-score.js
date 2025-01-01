@@ -35,12 +35,21 @@ module.exports = (tickerSymbol) => {
          - Moving Average #1: If current price is less than 200d MA and 50d MA is less than 200d MA 
          - Moving Average #2:  ((50d MA * 1. >= current price) && (50d MA * .95 <= current price)
         */
-        let currentPrice =
-            currentStockData.fundamentals !== undefined
+
+        let currentPrice = currentStockData.fmpQuote !== undefined
+            && isNaN(currentStockData.fmpQuote.price) === false
+            && currentStockData.fmpQuote.price !== null
+            ? currentStockData.fmpQuote.price : undefined;
+
+        //console.log(tickerSymbol + " - 1 - Current Price: " + currentPrice)
+
+        if (currentPrice === undefined) {
+            currentPrice = currentStockData.fundamentals !== undefined
                 && isNaN(currentStockData.fundamentals.currentPrice) === false
                 && currentStockData.fundamentals.currentPrice !== null
                 ? currentStockData.fundamentals.currentPrice : undefined;
-        //console.log(tickerSymbol + " - Current Price: " + currentPrice)
+        }
+        //console.log(tickerSymbol + " - 2 - Current Price: " + currentPrice)
 
 
         let futurePE =
@@ -57,10 +66,20 @@ module.exports = (tickerSymbol) => {
                 ? currentStockData.fundamentals["Profit Margin (%)"] : undefined;
         //console.log(tickerSymbol + " - Profit Margin (%) " + profitMargin)
 
-        let currentPE = currentStockData.fundamentals !== undefined
-            && currentStockData.fundamentals['P/E'] !== null
-            ? currentStockData.fundamentals['P/E'] : undefined;
-        //console.log(tickerSymbol + " - Current PE: " + currentPE)
+        let currentPE = currentStockData.fmpQuote !== undefined
+            && currentStockData.fmpQuote.pe !== null
+            && currentStockData.fmpQuote.pe !== 0
+            ? currentStockData.fmpQuote.pe : undefined;
+
+        //console.log(tickerSymbol + " - 1 - Current PE: " + currentPE)
+
+        if (currentPE === undefined) {
+            currentPE = currentStockData.fundamentals !== undefined
+                && isNaN(currentStockData.fundamentals['P/E']) === false
+                && currentStockData.fundamentals['P/E'] !== null
+                ? currentStockData.fundamentals['P/E'] : undefined;
+        }
+        //console.log(tickerSymbol + " - 2 - Current PE: " + currentPE)
 
         let debtEquity = currentStockData.fundamentals !== undefined
             && isNaN(currentStockData.fundamentals["Debt/Eq"]) === false
@@ -81,15 +100,33 @@ module.exports = (tickerSymbol) => {
             ? currentStockData.fundamentals["P/S"] : undefined;
         //console.log(tickerSymbol + " - P/S: " + priceSales)
 
-        let twoHundredDayMA = currentStockData.fundamentals !== undefined
-            && currentStockData.fundamentals.mva200 !== null
-            ? currentStockData.fundamentals.mva200 : undefined;
-        //console.log(tickerSymbol + " - 200d MA: " + twoHundredDayMA)
+        let twoHundredDayMA = currentStockData.fmpQuote !== undefined
+            && currentStockData.fmpQuote.priceAvg200 !== null
+            && currentStockData.fmpQuote.priceAvg200 !== 0
+            ? currentStockData.fmpQuote.priceAvg200 : undefined;
 
-        let fiftyDayMA = currentStockData.fundamentals !== undefined
-            && currentStockData.fundamentals.mva50 !== null
-            ? currentStockData.fundamentals.mva50 : undefined;
-        //console.log(tickerSymbol + " - 50d MA: " + fiftyDayMA)
+        //console.log(tickerSymbol + " - 1 - 200d MA: " + twoHundredDayMA)
+
+        if (twoHundredDayMA === undefined) {
+            twoHundredDayMA = currentStockData.fundamentals !== undefined
+                && currentStockData.fundamentals.mva200 !== null
+                ? currentStockData.fundamentals.mva200 : undefined;
+        }
+        //console.log(tickerSymbol + " - 2 - 200d MA: " + twoHundredDayMA)
+
+        let fiftyDayMA = currentStockData.fmpQuote !== undefined
+            && currentStockData.fmpQuote.priceAvg50 !== null
+            && currentStockData.fmpQuote.priceAvg50 !== 0
+            ? currentStockData.fmpQuote.priceAvg50 : undefined;
+
+        //console.log(tickerSymbol + " - 1 - 50d MA: " + fiftyDayMA)
+
+        if (fiftyDayMA === undefined) {
+            fiftyDayMA = currentStockData.fundamentals !== undefined
+                && currentStockData.fundamentals.mva50 !== null
+                ? currentStockData.fundamentals.mva50 : undefined;
+        }
+        //console.log(tickerSymbol + " - 2 - 50d MA: " + fiftyDayMA)
 
         let returnOnEquity = currentStockData.fundamentals !== undefined
             && isNaN(currentStockData.fundamentals["ROE (%)"]) === false
