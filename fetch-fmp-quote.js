@@ -71,7 +71,7 @@ module.exports = (tickerSymbol, fullSymbolData) => {
                         .catch(err => console.log(err)),
                     console.log(selectedLog),
                     sendLogToDatadog(selectedLog),
-                    //calcStockScore(tickerSymbol)
+                    calcStockScore(tickerSymbol)
 
                 )
                 .catch(err => console.log(err));
