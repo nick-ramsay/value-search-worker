@@ -80,7 +80,7 @@ const checker = (symbol, currentIndex) => {
 
     let eligibleDaysOfWeek = [2, 3, 4, 5, 6];
 
-    let startingHour = 6;
+    let startingHour = 20;
     let startingMinute = 30;
     let startingTime = Number(String(startingHour) + addLeadingZeroToMinute(startingMinute) + String(startingMinute));
 
