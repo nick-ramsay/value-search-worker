@@ -1,0 +1,1 @@
+worker: node orchestrator-v2.js
