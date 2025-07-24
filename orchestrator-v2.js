@@ -87,7 +87,7 @@ const checker = (symbol, currentIndex) => {
 
     let endingHour = 11;
     let endingMinute = 30;
-    let endingTime = Number(String(endingHour) + addLeadingZeroToMinute(endingHour) + String(endingMinute));
+    let endingTime = Number(String(endingHour) + addLeadingZeroToMinute(endingMinute) + String(endingMinute));
 
     let daysSinceQuoteUpdate = 0;
     let daysSinceLastScraped = 0;
@@ -125,7 +125,7 @@ const checker = (symbol, currentIndex) => {
                 service: 'value-search-worker'
             };
 
-            isEligibleDatetime = eligibleDaysOfWeek.indexOf(currentDayOfWeek) !== -1 && currentTime > startingTime && currentTime < endingTime;
+            isEligibleDatetime = eligibleDaysOfWeek.indexOf(currentDayOfWeek) !== -1 && (currentTime > startingTime || currentTime < endingTime);
 
             if (isEligibleDatetime) {
                 if (daysSinceQuoteUpdate >= .9) {
