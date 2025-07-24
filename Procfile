@@ -1,1 +1,1 @@
-worker: node orchestrator-v2.js
+worker: pm2 start orchestrator-v2.js --max-memory-restart 300M
